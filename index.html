@@ -309,8 +309,14 @@ function playClickSound(){
  try{audio.currentTime=0;const p=audio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}
 }
 const MUSIC_TRACKS=[
- {name:'Тема третьего персонажа',src:'./third_character_track.mp3'},
- {name:'Новая композиция',src:'./audio/new-track.m4a'}
+ {name:'ЗЕ Мерсо',src:'./music/ЗЕ Мерсо.m4a'},
+ {name:'Мерсо Жанна',src:'./music/Мерсо Жанна.m4a'},
+ {name:'Милый фембой',src:'./music/Милый фембой.m4a'},
+ {name:'ПАСОНЧИК МЕРСА',src:'./music/ПАСОНЧИК МЕРСА.m4a'},
+ {name:'ПАСОНЧИК ПО РАНДЕВУ',src:'./music/ПАСОНЧИК ПО РАНДЕВУ.m4a'},
+ {name:'РАНДЕВУ НО ПОЕТ МЕРСО',src:'./music/РАНДЕВУ НО ПОЕТ МЕРСО.m4a'},
+ {name:'Слоумо РАндеву',src:'./music/Слоумо РАндеву.m4a'},
+ {name:'Четыре тридцать',src:'./music/Четыре тридцать.m4a'}
 ];
 let currentMusicIndex=-1;
 function renderMusicList(){
