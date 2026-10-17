@@ -165,7 +165,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
 .music-track-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .music-track-card{display:flex;align-items:center;gap:11px;min-width:0;padding:11px;background:linear-gradient(110deg,#25231d,#111413);border:1px solid #50452f;border-left:3px solid #6d2926;transition:border-color .15s,background .15s,transform .15s}
 .music-track-card:hover{border-color:#b99a5c;background:linear-gradient(110deg,#33271e,#171817)}.music-track-card.is-playing{border-color:#d7b66f;border-left-color:#e6c779;background:linear-gradient(110deg,#4b2b24,#171817);box-shadow:inset 0 0 18px #b48b3612}
-.music-track-check{width:18px;height:18px;flex:0 0 18px;padding:0;accent-color:#b88b45;cursor:pointer}
+.music-track-check{width:30px;height:30px;flex:0 0 30px;padding:0;accent-color:#b88b45;cursor:pointer;transform:scale(1.12);transform-origin:center;touch-action:manipulation}.music-track-card{gap:13px;padding:13px}.music-track-card .music-track-check:focus-visible{outline:3px solid #e6c779;outline-offset:3px}
 .music-track-number{width:28px;flex:0 0 28px;color:#9d8a65;font:12px Georgia,serif}
 .music-track-details{flex:1;min-width:0;cursor:pointer;background:transparent!important;border:0!important;box-shadow:none!important;text-align:left;text-transform:none;letter-spacing:0;padding:0!important;color:#eadfc8!important}
 .music-track-name{display:block;font-size:13px;line-height:1.35;overflow-wrap:anywhere}.music-track-state{display:block;font:9px Arial,sans-serif;letter-spacing:1px;color:#9d9889;margin-top:5px}.music-track-card.is-playing .music-track-state{color:#e7c77d}
@@ -356,10 +356,10 @@ function renderMusicList(){
  const visible=MUSIC_TRACKS.map((track,i)=>({track,i})).filter(({track})=>track.name.toLocaleLowerCase('ru').includes(search));
  list.innerHTML=visible.map(({track,i})=>`<div class="music-track-card ${i===currentMusicIndex?'is-playing':''}">
  <input class="music-track-check" type="checkbox" data-music-select="${i}" ${selectedMusicTracks.includes(i)?'checked':''} aria-label="Добавить ${track.name} в плейлист">
- <span class="music-track-number">${String(i+1).padStart(2,'0')}</span>
+ <span class="music-track-number" title="${selectedMusicTracks.includes(i)?'Позиция в очереди':'Не выбран'}">${selectedMusicTracks.includes(i)?String(selectedMusicTracks.indexOf(i)+1).padStart(2,'0'):'—'}</span>
  <button type="button" class="music-track-details" data-music-play="${i}" aria-label="Включить ${track.name}"><span class="music-track-name">${track.name}</span><span class="music-track-state">${i===currentMusicIndex?($('thirdTrack')&&!$('thirdTrack').paused?'● СЕЙЧАС ИГРАЕТ':'Ⅱ НА ПАУЗЕ'):selectedMusicTracks.includes(i)?'В ПЛЕЙЛИСТЕ':'НЕ ВЫБРАН'}</span></button>
  <button type="button" class="music-track-play" data-music-play="${i}" aria-label="Воспроизвести ${track.name}">${i===currentMusicIndex&&$('thirdTrack')&&!$('thirdTrack').paused?'♫':'▶'}</button></div>`).join('')||'<p class="small">Ничего не найдено.</p>';
- list.querySelectorAll('[data-music-select]').forEach(box=>box.addEventListener('change',e=>{const i=Number(e.target.dataset.musicSelect);if(e.target.checked){if(!selectedMusicTracks.includes(i))selectedMusicTracks.push(i);selectedMusicTracks.sort((a,b)=>a-b)}else{selectedMusicTracks=selectedMusicTracks.filter(n=>n!==i)}saveSelectedMusic();renderMusicList()}));
+ list.querySelectorAll('[data-music-select]').forEach(box=>box.addEventListener('change',e=>{const i=Number(e.target.dataset.musicSelect);if(e.target.checked){if(!selectedMusicTracks.includes(i))selectedMusicTracks.push(i)}else{selectedMusicTracks=selectedMusicTracks.filter(n=>n!==i)}saveSelectedMusic();renderMusicList()}));
  list.querySelectorAll('[data-music-play]').forEach(btn=>btn.addEventListener('click',()=>playTrack(Number(btn.dataset.musicPlay))));
  const current=$('currentTrackName');if(current)current.textContent=currentMusicIndex>=0?MUSIC_TRACKS[currentMusicIndex].name:'Музыка не запущена';
  const audio=$('thirdTrack');const playing=!!(audio&&audio.src&&!audio.paused);
@@ -378,13 +378,13 @@ function playTrack(index){
 }
 function playNextTrack(){
  const t=$('thirdTrack');if(!t)return;
- const queue=selectedMusicTracks.slice().sort((a,b)=>a-b);
+ const queue=selectedMusicTracks.slice();
  if(!queue.length){currentMusicIndex=-1;renderMusicList();return;}
  let pos=queue.indexOf(currentMusicIndex);let next=queue[(pos+1)%queue.length];
  playTrack(next);
 }
 function playRandomTrack(){
- const queue=selectedMusicTracks.slice().sort((a,b)=>a-b);
+ const queue=selectedMusicTracks.slice();
  if(!queue.length){const current=$('currentTrackName');if(current)current.textContent='Сначала выбери хотя бы один трек';return;}
  const next=queue.includes(currentMusicIndex)?queue[(queue.indexOf(currentMusicIndex)+1)%queue.length]:queue[0];
  playTrack(next);
