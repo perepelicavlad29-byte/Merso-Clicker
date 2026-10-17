@@ -159,7 +159,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
  <div class="wallet"><span id="currencyIcon" class="coin">🪙</span><div><span id="money">0</span><div class="sub" id="currencyName">Лунаси</div></div></div>
 </header>
 <nav class="panel">
- <button class="active" data-tab="click">👆 Кликер</button><button data-tab="upgrades">⚡ Улучшения</button><button data-tab="sisyphus">🗿 Магазин Сизифа</button><button data-tab="inventory">🎒 Инвентарь</button><button data-tab="achievements">🏆 Достижения</button><button data-tab="settings">⚙️ Настройки</button>
+ <button class="active" data-tab="click">👆 Кликер</button><button data-tab="upgrades">⚡ Улучшения</button><button data-tab="sisyphus">🗿 Магазин Сизифа</button><button data-tab="inventory">🎒 Инвентарь</button><button data-tab="achievements">🏆 Достижения</button><button data-tab="music">🎵 Выбор музыки</button><button data-tab="settings">⚙️ Настройки</button>
 </nav>
 <main class="center">
  <section class="stats">
@@ -177,7 +177,21 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
  <section class="panel hidden" id="sisyphusSection"><h2 class="section-title">🗿 Магазин Сизифа</h2><p class="small">Покупай скины за монеты. Каждый скин увеличивает доход за клик. Картинки можно положить в папку <b>skins</b> как skin1.png — skin6.png.</p><div id="skinShop" class="upgrades skin-shop"></div></section>
  <section class="panel hidden" id="inventorySection"><h2 class="section-title">🎒 Инвентарь скинов</h2><p class="small">Здесь находятся все купленные скины. Нажми «Экипировать», чтобы выбрать персонажа.</p><div id="skinInventory" class="upgrades skin-shop"></div></section>
  <section class="panel hidden" id="achievementSection"><h2 class="section-title">🏆 Достижения</h2><div id="achievements"></div></section>
- <section class="panel hidden" id="settingsSection"><h2 class="section-title">⚙️ Настройки</h2><p class="small">Прогресс сохраняется автоматически в этом браузере.</p>
+ <section class="panel hidden" id="musicSection">
+<h2 class="section-title">🎵 Выбор музыки</h2>
+<p class="small">Музыка переключается случайным образом после окончания трека. Новые композиции можно добавить в папку audio.</p>
+<div class="panel" style="margin:12px 0;background:#111722">
+  <div class="small">Сейчас играет</div>
+  <h3 id="currentTrackName" style="margin:6px 0 12px">Музыка не запущена</h3>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button id="shuffleNowBtn" type="button">🔀 Следующий случайный трек</button>
+    <button id="musicToggleBtn" type="button" style="background:#303b50">⏸ Пауза</button>
+  </div>
+</div>
+<h3>Доступные треки</h3>
+<div id="musicTrackList" class="upgrades"></div>
+</section>
+<section class="panel hidden" id="settingsSection"><h2 class="section-title">⚙️ Настройки</h2><p class="small">Прогресс сохраняется автоматически в этом браузере.</p>
 <div class="volume-settings">
  <div class="volume-row"><label for="musicVolume">🎵 Громкость музыки <strong id="musicVolumeValue">55%</strong></label><input id="musicVolume" type="range" min="0" max="100" value="55" step="1"></div>
  <div class="volume-row"><label for="soundVolume">🔊 Громкость звуков <strong id="soundVolumeValue">70%</strong></label><input id="soundVolume" type="range" min="0" max="100" value="70" step="1"></div>
@@ -290,7 +304,31 @@ function playClickSound(){
  if(!audio)return;
  try{audio.currentTime=0;const p=audio.play();if(p&&p.catch)p.catch(()=>{});}catch(e){}
 }
-function startThirdTrack(){const t=document.getElementById('thirdTrack');if(!t)return;t.volume=audioPrefs.music/100;t.loop=true;try{t.currentTime=0;const p=t.play();if(p&&p.catch)p.catch(()=>{document.addEventListener('pointerdown',()=>t.play().catch(()=>{}),{once:true});});}catch(e){}}
+const MUSIC_TRACKS=[
+ {name:'Тема третьего персонажа',src:'./third_character_track.mp3'},
+ {name:'Новая композиция',src:'./audio/new-track.m4a'}
+];
+let currentMusicIndex=-1;
+function renderMusicList(){
+ const list=$('musicTrackList'); if(!list)return;
+ list.innerHTML=MUSIC_TRACKS.map((track,i)=>`<div class="upgrade-card" style="padding:12px"><strong>${track.name}</strong><div class="small">${i===currentMusicIndex?'▶ Сейчас играет':'🎵 В случайном плейлисте'}</div></div>`).join('');
+ const current=$('currentTrackName');if(current)current.textContent=currentMusicIndex>=0?MUSIC_TRACKS[currentMusicIndex].name:'Музыка не запущена';
+ const toggle=$('musicToggleBtn');if(toggle)toggle.textContent=$('thirdTrack')&&!$('thirdTrack').paused?'⏸ Пауза':'▶ Продолжить';
+}
+function playRandomTrack(){
+ const t=$('thirdTrack');if(!t||!MUSIC_TRACKS.length)return;
+ let next=0;
+ if(MUSIC_TRACKS.length>1){do{next=Math.floor(Math.random()*MUSIC_TRACKS.length)}while(next===currentMusicIndex);}
+ currentMusicIndex=next;t.src=MUSIC_TRACKS[next].src;t.volume=audioPrefs.music/100;t.loop=false;t.load();
+ renderMusicList();
+ const p=t.play();if(p&&p.catch)p.catch(()=>{});
+}
+function startThirdTrack(){const t=$('thirdTrack');if(!t)return;t.onended=playRandomTrack;playRandomTrack();}
+$('shuffleNowBtn')?.addEventListener('click',playRandomTrack);
+$('musicToggleBtn')?.addEventListener('click',()=>{const t=$('thirdTrack');if(!t)return;if(t.paused){t.play().then(renderMusicList).catch(()=>{});}else{t.pause();renderMusicList();}});
+$('thirdTrack')?.addEventListener('play',renderMusicList);
+$('thirdTrack')?.addEventListener('pause',renderMusicList);
+renderMusicList();
 function clickBoss(e){
  state.coins+=clickPower();state.total+=clickPower();state.clicks++;
  if(state.clicks>=10&&!state.transformed&&!cutsceneActive){
@@ -455,15 +493,17 @@ document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()
  $('upgradeSection').classList.toggle('hidden',tab!=='upgrades'&&tab!=='click');
  $('achievementSection').classList.toggle('hidden',tab!=='achievements');
  $('settingsSection').classList.toggle('hidden',tab!=='settings');
+ $('musicSection').classList.toggle('hidden',tab!=='music');
  $('sisyphusSection').classList.toggle('hidden',tab!=='sisyphus');
  $('inventorySection').classList.toggle('hidden',tab!=='inventory');
- $('customPanel').classList.toggle('hidden',tab==='settings'||tab==='achievements'||tab==='upgrades'||tab==='sisyphus'||tab==='inventory');
+ $('customPanel').classList.toggle('hidden',tab==='settings'||tab==='music'||tab==='achievements'||tab==='upgrades'||tab==='sisyphus'||tab==='inventory');
  if(tab==='custom')$('customPanel').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='upgrades')$('upgradeSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='sisyphus')$('sisyphusSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='inventory')$('inventorySection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='achievements')$('achievementSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='settings')$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});
+ if(tab==='music')$('musicSection').scrollIntoView({behavior:'smooth',block:'start'});
 }));
 $('saveBtn').addEventListener('click',save);
 $('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбросить весь прогресс?')){localStorage.removeItem('bossClickerSave_v2');localStorage.removeItem('bossClickerSave');state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:-1,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0}};render();toast('Прогресс сброшен.')}});
