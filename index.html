@@ -6,7 +6,9 @@
 <title>Мерсо Кликер</title>
 <style>
 :root{--bg:#10131d;--panel:#191f2d;--panel2:#20293a;--accent:#ef4b5b;--text:#f5f5f7;--muted:#a8b1c3;--line:#303b50}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 30%,#38202b 0,#10131d 48%,#090b11 100%);color:var(--text);font:16px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+*{box-sizing:border-box}
+img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
+img[draggable="false"]{ -webkit-user-drag:none }body{margin:0;background:radial-gradient(circle at 50% 30%,#38202b 0,#10131d 48%,#090b11 100%);color:var(--text);font:16px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
 button,input,select{font:inherit}button{cursor:pointer;border:0;color:white;background:var(--accent);border-radius:12px;padding:11px 14px;font-weight:700;transition:transform .08s,filter .15s}button:hover{filter:brightness(1.12)}button:active{transform:scale(.97)}button:disabled{opacity:.42;cursor:not-allowed}
 .app{max-width:100%;margin:auto;padding:10px;display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px}
 header{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:14px;background:#111722d9;border:1px solid var(--line);padding:16px 20px;border-radius:18px}
@@ -141,6 +143,8 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
 .skin-preview span{font-size:32px;}
 .skin-card button{width:100%;}
 @media(max-width:700px){.skin-shop{grid-template-columns:1fr;}}
+
+.menu-icon { width: 20px; height: 20px; object-fit: contain; vertical-align: middle; margin-right: 6px; flex-shrink: 0; }
 </style>
 <link rel="icon" href="shortcut-icon/game-icon.png" type="image/png">
 </head>
@@ -159,7 +163,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
  <div class="wallet"><span id="currencyIcon" class="coin">🪙</span><div><span id="money">0</span><div class="sub" id="currencyName">Лунаси</div></div></div>
 </header>
 <nav class="panel">
- <button class="active" data-tab="click">👆 Кликер</button><button data-tab="upgrades">⚡ Улучшения</button><button data-tab="sisyphus">🗿 Магазин Сизифа</button><button data-tab="inventory">🎒 Инвентарь</button><button data-tab="achievements">🏆 Достижения</button><button data-tab="music">🎵 Выбор музыки</button><button data-tab="settings">⚙️ Настройки</button>
+ <button class="active" data-tab="click"><img class="menu-icon" src="menu-icons/click.png" alt=""> Кликер</button><button data-tab="upgrades"><img class="menu-icon" src="menu-icons/upgrades.png" alt=""> Улучшения</button><button data-tab="sisyphus"><img class="menu-icon" src="menu-icons/sisyphus.png" alt=""> Магазин Сизифа</button><button data-tab="inventory"><img class="menu-icon" src="menu-icons/inventory.png" alt=""> Инвентарь</button><button data-tab="achievements"><img class="menu-icon" src="menu-icons/achievements.png" alt=""> Достижения</button><button data-tab="music"><img class="menu-icon" src="menu-icons/music.png" alt=""> Выбор музыки</button><button data-tab="settings"><img class="menu-icon" src="menu-icons/settings.png" alt=""> Настройки</button>
 </nav>
 <main class="center">
  <section class="stats">
@@ -168,9 +172,9 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
   <div class="stat"><small>Кликов</small><strong id="clicks">0</strong></div>
  </section>
  <section class="arena" id="arena">
-  <img id="boss" src="./boss.jpg" alt="Мерсо — нажми на него">
+  <img id="boss" src="./boss.jpg" alt="Мерсо — нажми на него" draggable="false">
   <div id="speechBubble" class="speech-bubble hidden"></div>
-  <img id="thirdBoss" class="hidden" alt="Мерсо — нажми на него" style="width:min(100%,760px);max-height:78vh;object-fit:contain;position:relative;z-index:2;cursor:pointer;filter:drop-shadow(0 15px 22px #0009);border-radius:18px">
+  <img id="thirdBoss" class="hidden" draggable="false" alt="Мерсо — нажми на него" style="width:min(100%,760px);max-height:78vh;object-fit:contain;position:relative;z-index:2;cursor:pointer;filter:drop-shadow(0 15px 22px #0009);border-radius:18px">
   <div class="boss-hint" id="hint">Нажми на Мерсо!</div>
  </section>
  <section class="panel" id="upgradeSection"><h2 class="section-title"><img class="upgrade-heading-icon" src="upgrade-heading-icon.png" alt=""> Улучшения</h2><div class="upgrades" id="upgrades"></div></section>
@@ -384,6 +388,8 @@ function clickBoss(e){
  if(!cutsceneActive){$('hint').textContent=['Так держать!','Ещё клик!','Босс не сдаётся!','Монеты твои!'][state.clicks%4];}
  render();save();
 }
+// Отключаем системное перетаскивание изображений, сохраняя обработку кликов по персонажам.
+document.querySelectorAll('img').forEach(img=>{img.draggable=false;img.addEventListener('dragstart',e=>e.preventDefault());});
 $('boss').addEventListener('click',clickBoss);
 const mersoPhrases=[
  'Ух... Менеджер полегче',
