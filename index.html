@@ -159,7 +159,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
  <div class="wallet"><span id="currencyIcon" class="coin">🪙</span><div><span id="money">0</span><div class="sub" id="currencyName">Лунаси</div></div></div>
 </header>
 <nav class="panel">
- <button class="active" data-tab="click">👆 Кликер</button><button data-tab="upgrades">⚡ Улучшения</button><button data-tab="sisyphus">🗿 Магазин Сизифа</button><button data-tab="achievements">🏆 Достижения</button><button data-tab="settings">⚙️ Настройки</button>
+ <button class="active" data-tab="click">👆 Кликер</button><button data-tab="upgrades">⚡ Улучшения</button><button data-tab="sisyphus">🗿 Магазин Сизифа</button><button data-tab="inventory">🎒 Инвентарь</button><button data-tab="achievements">🏆 Достижения</button><button data-tab="settings">⚙️ Настройки</button>
 </nav>
 <main class="center">
  <section class="stats">
@@ -175,6 +175,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
  </section>
  <section class="panel" id="upgradeSection"><h2 class="section-title"><img class="upgrade-heading-icon" src="upgrade-heading-icon.png" alt=""> Улучшения</h2><div class="upgrades" id="upgrades"></div></section>
  <section class="panel hidden" id="sisyphusSection"><h2 class="section-title">🗿 Магазин Сизифа</h2><p class="small">Покупай скины за монеты. Каждый скин увеличивает доход за клик. Картинки можно положить в папку <b>skins</b> как skin1.png — skin6.png.</p><div id="skinShop" class="upgrades skin-shop"></div></section>
+ <section class="panel hidden" id="inventorySection"><h2 class="section-title">🎒 Инвентарь скинов</h2><p class="small">Здесь находятся все купленные скины. Нажми «Экипировать», чтобы выбрать персонажа.</p><div id="skinInventory" class="upgrades skin-shop"></div></section>
  <section class="panel hidden" id="achievementSection"><h2 class="section-title">🏆 Достижения</h2><div id="achievements"></div></section>
  <section class="panel hidden" id="settingsSection"><h2 class="section-title">⚙️ Настройки</h2><p class="small">Прогресс сохраняется автоматически в этом браузере.</p>
 <div class="volume-settings">
@@ -194,6 +195,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
   <label>Символ валюты</label><div class="symbols" id="symbols"></div>
   <label for="skinSelect">Скин персонажа</label><select id="skinSelect">
    <option value="boss.jpg">Мерсо — оригинал</option>
+   <option value="third_boss.png">Обычный Мерсо (3-я картинка)</option>
    <option value="emoji">Эмодзи-Мерсо 👔</option>
    <option value="skins/skin1.png">Скин 1 — мой</option>
    <option value="skins/skin2.png">Скин 2 — мой</option>
@@ -229,6 +231,7 @@ const tenthClickImage='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAA
 const thirdBossImage='./third_boss.png';
 let cutsceneActive=false;
 const skinCatalog=[
+ {id:0,name:'Обычный Мерсо (3-я картинка)',price:0,multiplier:1,file:'third_boss.png'},
  {id:1,name:'Мерсо в Шибаре',price:4000,multiplier:1.5,file:'skins/skin1.png'},
  {id:2,name:'Ким Мерсо',price:12000,multiplier:2,file:'skins/skin2.png'},
  {id:3,name:'Пчелка Мерсо',price:35000,multiplier:3,file:'skins/skin3.png'},
@@ -236,8 +239,10 @@ const skinCatalog=[
  {id:5,name:'Новогодний Мерсо',price:300000,multiplier:8,file:'skins/skin5.png'},
  {id:6,name:'МЕРСО ИЗ БОЛЬШОГО ПАЛЬЦА',price:1000000,multiplier:12,file:'skins/skin6.png'}
 ];
-let state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:0,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0}};
-try{const saved=JSON.parse(localStorage.getItem('bossClickerSave_v2'));if(saved){state={...state,...saved,owned:{...state.owned,...saved.owned},ownedSkins:Array.isArray(saved.ownedSkins)?saved.ownedSkins:[0],equippedSkin:Number.isInteger(saved.equippedSkin)?saved.equippedSkin:0};/* Always start with the first character; the transformation happens only after 10 fresh clicks. */state.transformed=false;state.clicks=0;}}catch(e){}
+let state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:-1,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0}};
+try{const saved=JSON.parse(localStorage.getItem('bossClickerSave_v2'));if(saved){state={...state,...saved,owned:{...state.owned,...saved.owned},ownedSkins:Array.isArray(saved.ownedSkins)?saved.ownedSkins:[0],equippedSkin:Number.isInteger(saved.equippedSkin)?saved.equippedSkin:0};}}catch(e){}
+if(!state.ownedSkins.includes(0))state.ownedSkins.unshift(0);
+if(state.equippedSkin===0&&state.skin==='boss.jpg')state.equippedSkin=-1;
 function cost(u){return Math.floor(u.base*Math.pow(1.55,state.owned[u.id]||0))}
 function fmt(n){return Math.floor(n).toLocaleString('ru-RU')}
 function toast(s){$('toast').textContent=s}
@@ -254,11 +259,12 @@ function render(){
  $('perSec').textContent=fmt(state.auto+state.boost*5);$('clicks').textContent=fmt(state.clicks);
  $('titleInput').value=state.title;$('currencyInput').value=state.currency;
  $('skinSelect').value=state.skin;
- if(!cutsceneActive){if(state.transformed){$('boss').classList.add('hidden');$('thirdBoss').src=thirdBossImage;$('thirdBoss').classList.remove('hidden');$('hint').textContent='Нажимай на персонажа!';}else{$('boss').classList.remove('hidden');$('boss').onerror=()=>{$('boss').onerror=null;$('boss').src=embeddedBoss;};$('boss').src=state.skin==='emoji'?'data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 240"><text x="110" y="190" font-size="180" text-anchor="middle">🕴️</text></svg>'):state.skin;$('thirdBoss').classList.add('hidden');}}
+ if(!cutsceneActive){if(state.transformed){$('boss').classList.add('hidden');$('thirdBoss').src=state.equippedSkin>=0?state.skin:thirdBossImage;$('thirdBoss').classList.remove('hidden');$('hint').textContent='Нажимай на персонажа!';}else{$('boss').classList.remove('hidden');$('boss').onerror=()=>{$('boss').onerror=null;$('boss').src=embeddedBoss;};$('boss').src=state.skin==='emoji'?'data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 240"><text x="110" y="190" font-size="180" text-anchor="middle">🕴️</text></svg>'):state.skin;$('thirdBoss').classList.add('hidden');}}
  $('upgrades').innerHTML=upgrades.map(u=>`<div class="upgrade"><div class="emoji"><img src="upgrade-icons/${u.id}.png" alt="${u.name}" onerror="this.style.display='none';this.parentElement.textContent='${u.emoji}'"></div><strong>${u.name}</strong><p>${u.desc}<br>Уровень: ${state.owned[u.id]||0}</p><div class="price"><img class="currency-rose price-rose" src="currency/rose.png" alt="Розочка"> ${fmt(cost(u))}</div><button data-buy="${u.id}" ${state.coins<cost(u)?'disabled':''}>Купить</button></div>`).join('');
  $('colors').innerHTML=themes.map((t,i)=>`<button class="swatch ${state.theme===i?'selected':''}" data-theme="${i}"><span style="background:${t.accent}"></span>${t.name}</button>`).join('');
  $('symbols').innerHTML=symbols.map(s=>`<button data-symbol="${s}" class="${state.symbol===s?'selected':''}">${s}</button>`).join('');
- $('skinShop').innerHTML=skinCatalog.map(k=>{const owned=state.ownedSkins.includes(k.id),equipped=state.equippedSkin===k.id;return `<div class="upgrade skin-card"><div class="skin-preview"><img src="${k.file}" alt="${k.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none">🖼️</span></div><strong>${k.name}</strong><p>Бонус к клику: <b>x${k.multiplier}</b></p><div class="price"><img class="currency-rose price-rose" src="currency/rose.png" alt="Розочка"> ${fmt(k.price)}</div><button data-skin-action="${owned?'equip':'buy'}" data-skin-id="${k.id}" ${equipped?'disabled':''} ${!owned&&state.coins<k.price?'disabled':''}>${equipped?'Экипирован':owned?'Экипировать':'Купить'}</button></div>`}).join('');
+ $('skinShop').innerHTML=skinCatalog.map(k=>{const owned=state.ownedSkins.includes(k.id),equipped=state.equippedSkin===k.id&&state.skin===k.file;return `<div class="upgrade skin-card"><div class="skin-preview"><img src="${k.file}" alt="${k.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none">🖼️</span></div><strong>${k.name}</strong><p>Бонус к клику: <b>x${k.multiplier}</b></p><div class="price"><img class="currency-rose price-rose" src="currency/rose.png" alt="Розочка"> ${fmt(k.price)}</div><button data-skin-action="${owned?'equip':'buy'}" data-skin-id="${k.id}" ${equipped?'disabled':''} ${!owned&&state.coins<k.price?'disabled':''}>${equipped?'Экипирован':owned?'Экипировать':'Купить'}</button></div>`}).join('');
+ $('skinInventory').innerHTML=skinCatalog.filter(k=>state.ownedSkins.includes(k.id)).map(k=>{const equipped=state.equippedSkin===k.id&&state.skin===k.file;return `<div class="upgrade skin-card"><div class="skin-preview"><img src="${k.file}" alt="${k.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none">🖼️</span></div><strong>${k.name}</strong><p>Бонус к клику: <b>x${k.multiplier}</b></p><button data-inventory-equip="${k.id}" ${equipped?'disabled':''}>${equipped?'✅ Надет':'Экипировать'}</button></div>`}).join('') || '<p class="small">Пока нет купленных скинов. Загляни в Магазин Сизифа!</p>';
  const goal=Math.min(100,Math.floor(state.total/100)*100+100),progress=Math.min(100,state.total%100);
  $('goal').textContent=state.total>=1000?'Цель выполнена! Ты легенда!':`Следующая цель: ${fmt(goal)} ${state.currency}`;
  $('goalProgress').textContent=`${fmt(state.total%100)} / 100`; $('goalBar').style.width=progress+'%';
@@ -440,8 +446,9 @@ $('colors').addEventListener('click',e=>{const b=e.target.closest('[data-theme]'
 $('symbols').addEventListener('click',e=>{const b=e.target.closest('[data-symbol]');if(b){state.symbol=b.dataset.symbol;render();save()}});
 $('titleInput').addEventListener('input',e=>{state.title=e.target.value;render();save()});
 $('currencyInput').addEventListener('input',e=>{state.currency=e.target.value;render();save()});
-$('skinSelect').addEventListener('change',e=>{if(e.target.value==='boss.jpg'||e.target.value==='emoji'){state.equippedSkin=0;state.skin=e.target.value;}else{const k=skinCatalog.find(x=>x.file===e.target.value);if(k&&state.ownedSkins.includes(k.id)){state.equippedSkin=k.id;state.skin=k.file;}else{e.target.value=state.skin;toast('Сначала купи этот скин в магазине!');}}render();save()});
+$('skinSelect').addEventListener('change',e=>{if(e.target.value==='boss.jpg'||e.target.value==='emoji'){state.equippedSkin=-1;state.skin=e.target.value;}else{const k=skinCatalog.find(x=>x.file===e.target.value);if(k&&state.ownedSkins.includes(k.id)){state.equippedSkin=k.id;state.skin=k.file;}else{e.target.value=state.skin;toast('Сначала купи этот скин в магазине!');}}render();save()});
 $('skinShop').addEventListener('click',e=>{const b=e.target.closest('[data-skin-action]');if(!b)return;const id=Number(b.dataset.skinId),k=skinCatalog.find(x=>x.id===id);if(!k)return;if(b.dataset.skinAction==='buy'){if(state.coins<k.price)return;state.coins-=k.price;if(!state.ownedSkins.includes(id))state.ownedSkins.push(id);state.equippedSkin=id;state.skin=k.file;toast(`${k.name} куплен! Бонус к клику x${k.multiplier}`);}else{state.equippedSkin=id;state.skin=k.file;toast(`${k.name} экипирован!`);}render();save();});
+$('skinInventory').addEventListener('click',e=>{const b=e.target.closest('[data-inventory-equip]');if(!b)return;const id=Number(b.dataset.inventoryEquip),k=skinCatalog.find(x=>x.id===id);if(!k||!state.ownedSkins.includes(id))return;state.equippedSkin=id;state.skin=k.file;render();save();toast(`${k.name} экипирован!`);});
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{
  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));
  const tab=b.dataset.tab;
@@ -449,15 +456,17 @@ document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()
  $('achievementSection').classList.toggle('hidden',tab!=='achievements');
  $('settingsSection').classList.toggle('hidden',tab!=='settings');
  $('sisyphusSection').classList.toggle('hidden',tab!=='sisyphus');
- $('customPanel').classList.toggle('hidden',tab==='settings'||tab==='achievements'||tab==='upgrades'||tab==='sisyphus');
+ $('inventorySection').classList.toggle('hidden',tab!=='inventory');
+ $('customPanel').classList.toggle('hidden',tab==='settings'||tab==='achievements'||tab==='upgrades'||tab==='sisyphus'||tab==='inventory');
  if(tab==='custom')$('customPanel').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='upgrades')$('upgradeSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='sisyphus')$('sisyphusSection').scrollIntoView({behavior:'smooth',block:'start'});
+ if(tab==='inventory')$('inventorySection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='achievements')$('achievementSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='settings')$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});
 }));
 $('saveBtn').addEventListener('click',save);
-$('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбросить весь прогресс?')){localStorage.removeItem('bossClickerSave_v2');localStorage.removeItem('bossClickerSave');state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:0,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0}};render();toast('Прогресс сброшен.')}});
+$('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбросить весь прогресс?')){localStorage.removeItem('bossClickerSave_v2');localStorage.removeItem('bossClickerSave');state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:-1,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0}};render();toast('Прогресс сброшен.')}});
 setInterval(()=>{const rate=state.auto+state.boost*5;if(rate>0){state.coins+=rate;state.total+=rate;render();save()}},1000);
 applyAudioVolumes();
 render();
