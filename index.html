@@ -145,6 +145,35 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
 @media(max-width:700px){.skin-shop{grid-template-columns:1fr;}}
 
 .menu-icon { width: 20px; height: 20px; object-fit: contain; vertical-align: middle; margin-right: 6px; flex-shrink: 0; }
+
+/* Custom music archive UI */
+.music-library{padding:clamp(12px,2vw,24px);overflow:hidden}
+.music-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.music-eyebrow{font:10px Arial,sans-serif;letter-spacing:2.2px;color:#c4a66b;margin-bottom:7px}
+.music-heading .section-title{font-size:clamp(21px,3vw,29px);margin-bottom:7px}
+.music-heading .small{max-width:620px}
+.music-count{min-width:94px;border:1px solid #746342;background:linear-gradient(145deg,#29241c,#111311);padding:12px;text-align:center}
+.music-count strong{display:block;color:#f0d28e;font-size:27px;line-height:1.1}
+.music-count span{font:9px Arial,sans-serif;letter-spacing:1.2px;color:#b8aa8e}
+.music-now{display:flex;align-items:center;gap:16px;margin:0 0 22px;padding:16px;background:radial-gradient(ellipse at 0 0,#39261f,#151817 65%);border-color:#a88a53;box-shadow:inset 0 0 30px #0007}
+.music-disc{width:64px;height:64px;flex:0 0 64px;border-radius:50%;display:grid;place-items:center;font-size:28px;color:#e5c887;border:2px solid #a88a53;background:repeating-radial-gradient(circle,#171918 0 5px,#29241d 6px 7px);box-shadow:0 0 0 5px #c2a46a12}
+.music-now-info{flex:1;min-width:0}.music-now-info h3{margin:3px 0 7px;font-size:clamp(17px,2vw,23px);overflow-wrap:anywhere;color:#f2e2bd}
+.music-playing-status{font:9px Arial,sans-serif;letter-spacing:1.5px;color:#c7a66b}
+.music-main-controls{display:flex;gap:7px;align-items:center}.music-play-button{white-space:nowrap}.music-next-button{font-size:18px;padding:10px 13px;min-width:45px}
+.music-library-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.music-library-toolbar h3{margin:0 0 4px;font-size:14px;letter-spacing:1.5px;color:#e6d2a4}.music-bulk-actions{display:flex;gap:6px;flex-wrap:wrap}.music-secondary{background:linear-gradient(#292b26,#151715);font-size:10px;padding:8px 10px;letter-spacing:.5px}
+.music-search-wrap{display:flex;align-items:center;gap:9px;margin:0 0 12px;padding:0 12px;border:1px solid #655436;background:#0b0e0d;color:#d4b879}.music-search-wrap span{font-size:23px}.music-search-wrap input{border:0;border-radius:0;background:transparent;outline:none;padding:12px 0;color:#f5ead1}.music-search-wrap input:focus{box-shadow:none}
+.music-track-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.music-track-card{display:flex;align-items:center;gap:11px;min-width:0;padding:11px;background:linear-gradient(110deg,#25231d,#111413);border:1px solid #50452f;border-left:3px solid #6d2926;transition:border-color .15s,background .15s,transform .15s}
+.music-track-card:hover{border-color:#b99a5c;background:linear-gradient(110deg,#33271e,#171817)}.music-track-card.is-playing{border-color:#d7b66f;border-left-color:#e6c779;background:linear-gradient(110deg,#4b2b24,#171817);box-shadow:inset 0 0 18px #b48b3612}
+.music-track-check{width:18px;height:18px;flex:0 0 18px;padding:0;accent-color:#b88b45;cursor:pointer}
+.music-track-number{width:28px;flex:0 0 28px;color:#9d8a65;font:12px Georgia,serif}
+.music-track-details{flex:1;min-width:0;cursor:pointer;background:transparent!important;border:0!important;box-shadow:none!important;text-align:left;text-transform:none;letter-spacing:0;padding:0!important;color:#eadfc8!important}
+.music-track-name{display:block;font-size:13px;line-height:1.35;overflow-wrap:anywhere}.music-track-state{display:block;font:9px Arial,sans-serif;letter-spacing:1px;color:#9d9889;margin-top:5px}.music-track-card.is-playing .music-track-state{color:#e7c77d}
+.music-track-play{padding:7px 9px;font-size:12px;min-width:35px;background:transparent!important;border:1px solid #655436!important;box-shadow:none!important;color:#d8bd82!important}
+.music-footer{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;border-top:1px solid #514630;margin-top:16px;padding-top:11px;color:#93856a;font:9px Arial,sans-serif;letter-spacing:1px}
+@keyframes musicSpin{to{transform:rotate(360deg)}}
+@media(max-width:700px){.music-track-list{grid-template-columns:1fr}.music-now{flex-wrap:wrap}.music-disc{width:48px;height:48px;flex-basis:48px}.music-main-controls{width:100%}.music-play-button{flex:1}.music-heading{align-items:flex-start}.music-count{min-width:75px}.music-library-toolbar{align-items:flex-start;flex-direction:column}.music-bulk-actions{width:100%}}
+
 </style>
 <link rel="icon" href="shortcut-icon/game-icon.png" type="image/png">
 </head>
@@ -181,19 +210,16 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
  <section class="panel hidden" id="sisyphusSection"><h2 class="section-title">🗿 Магазин Сизифа</h2><p class="small">Покупай скины за монеты. Каждый скин увеличивает доход за клик. Картинки можно положить в папку <b>skins</b> как skin1.png — skin6.png.</p><div id="skinShop" class="upgrades skin-shop"></div></section>
  <section class="panel hidden" id="inventorySection"><h2 class="section-title">🎒 Инвентарь скинов</h2><p class="small">Здесь находятся все купленные скины. Нажми «Экипировать», чтобы выбрать персонажа.</p><div id="skinInventory" class="upgrades skin-shop"></div></section>
  <section class="panel hidden" id="achievementSection"><h2 class="section-title">🏆 Достижения</h2><div id="achievements"></div></section>
- <section class="panel hidden" id="musicSection">
-<h2 class="section-title">🎵 Выбор музыки</h2>
-<p class="small">Музыка переключается случайным образом после окончания трека. Новые композиции можно добавить в папку audio.</p>
-<div class="panel" style="margin:12px 0;background:#111722">
-  <div class="small">Сейчас играет</div>
-  <h3 id="currentTrackName" style="margin:6px 0 12px">Музыка не запущена</h3>
-  <div style="display:flex;gap:8px;flex-wrap:wrap">
-    <button id="shuffleNowBtn" type="button">🔀 Следующий случайный трек</button>
-    <button id="musicToggleBtn" type="button" style="background:#303b50">⏸ Пауза</button>
+ <section class="panel hidden music-library" id="musicSection">
+  <div class="music-heading"><div><div class="music-eyebrow">LIMBUS RAILWAY • AUDIO ARCHIVE</div><h2 class="section-title">♫ Музыкальный архив</h2><p class="small">Собери свой плейлист. Отмеченные композиции будут играть по порядку и повторяться по кругу.</p></div><div class="music-count"><strong id="selectedTrackCount">8</strong><span>В ПЛЕЙЛИСТЕ</span></div></div>
+  <div class="music-now panel">
+    <div class="music-disc" id="musicDisc">♫</div><div class="music-now-info"><div class="music-eyebrow">NOW PLAYING</div><h3 id="currentTrackName">Музыка не запущена</h3><div class="music-playing-status" id="musicPlayingStatus">ГОТОВ К ВОСПРОИЗВЕДЕНИЮ</div></div>
+    <div class="music-main-controls"><button id="musicToggleBtn" type="button" class="music-play-button">▶ Воспроизвести</button><button id="shuffleNowBtn" type="button" class="music-next-button" title="Следующий трек">⏭</button></div>
   </div>
-</div>
-<h3>Доступные треки</h3>
-<div id="musicTrackList" class="upgrades"></div>
+  <div class="music-library-toolbar"><div><h3>ТВОЙ ПЛЕЙЛИСТ</h3><span class="small">Выбери, какие треки будут играть</span></div><div class="music-bulk-actions"><button id="musicSelectAllBtn" type="button" class="music-secondary">Выбрать все</button><button id="musicClearAllBtn" type="button" class="music-secondary">Очистить</button></div></div>
+  <label class="music-search-wrap"><span>⌕</span><input id="musicSearch" type="search" placeholder="Найти композицию…" autocomplete="off"></label>
+  <div id="musicTrackList" class="music-track-list"></div>
+  <div class="music-footer"><span>◈ ПОРЯДОК ВОСПРОИЗВЕДЕНИЯ: ПО СПИСКУ</span><span>ПОВТОР: ВКЛЮЧЁН</span></div>
 </section>
 <section class="panel hidden" id="settingsSection"><h2 class="section-title">⚙️ Настройки</h2><p class="small">Прогресс сохраняется автоматически в этом браузере.</p>
 <div class="volume-settings">
@@ -319,23 +345,54 @@ const MUSIC_TRACKS=[
  {name:'Четыре тридцать',src:'./music/Четыре тридцать.m4a'}
 ];
 let currentMusicIndex=-1;
+let selectedMusicTracks;
+try{selectedMusicTracks=JSON.parse(localStorage.getItem('bossClickerSelectedMusic')||'null')}catch(e){selectedMusicTracks=null}
+if(!Array.isArray(selectedMusicTracks))selectedMusicTracks=MUSIC_TRACKS.map((_,i)=>i);
+selectedMusicTracks=selectedMusicTracks.filter(i=>Number.isInteger(i)&&i>=0&&i<MUSIC_TRACKS.length);
+function saveSelectedMusic(){try{localStorage.setItem('bossClickerSelectedMusic',JSON.stringify(selectedMusicTracks))}catch(e){}}
 function renderMusicList(){
- const list=$('musicTrackList'); if(!list)return;
- list.innerHTML=MUSIC_TRACKS.map((track,i)=>`<div class="upgrade-card" style="padding:12px"><strong>${track.name}</strong><div class="small">${i===currentMusicIndex?'▶ Сейчас играет':'🎵 В случайном плейлисте'}</div></div>`).join('');
+ const list=$('musicTrackList');if(!list)return;
+ const search=($('musicSearch')?.value||'').trim().toLocaleLowerCase('ru');
+ const visible=MUSIC_TRACKS.map((track,i)=>({track,i})).filter(({track})=>track.name.toLocaleLowerCase('ru').includes(search));
+ list.innerHTML=visible.map(({track,i})=>`<div class="music-track-card ${i===currentMusicIndex?'is-playing':''}">
+ <input class="music-track-check" type="checkbox" data-music-select="${i}" ${selectedMusicTracks.includes(i)?'checked':''} aria-label="Добавить ${track.name} в плейлист">
+ <span class="music-track-number">${String(i+1).padStart(2,'0')}</span>
+ <button type="button" class="music-track-details" data-music-play="${i}" aria-label="Включить ${track.name}"><span class="music-track-name">${track.name}</span><span class="music-track-state">${i===currentMusicIndex?($('thirdTrack')&&!$('thirdTrack').paused?'● СЕЙЧАС ИГРАЕТ':'Ⅱ НА ПАУЗЕ'):selectedMusicTracks.includes(i)?'В ПЛЕЙЛИСТЕ':'НЕ ВЫБРАН'}</span></button>
+ <button type="button" class="music-track-play" data-music-play="${i}" aria-label="Воспроизвести ${track.name}">${i===currentMusicIndex&&$('thirdTrack')&&!$('thirdTrack').paused?'♫':'▶'}</button></div>`).join('')||'<p class="small">Ничего не найдено.</p>';
+ list.querySelectorAll('[data-music-select]').forEach(box=>box.addEventListener('change',e=>{const i=Number(e.target.dataset.musicSelect);if(e.target.checked){if(!selectedMusicTracks.includes(i))selectedMusicTracks.push(i);selectedMusicTracks.sort((a,b)=>a-b)}else{selectedMusicTracks=selectedMusicTracks.filter(n=>n!==i)}saveSelectedMusic();renderMusicList()}));
+ list.querySelectorAll('[data-music-play]').forEach(btn=>btn.addEventListener('click',()=>playTrack(Number(btn.dataset.musicPlay))));
  const current=$('currentTrackName');if(current)current.textContent=currentMusicIndex>=0?MUSIC_TRACKS[currentMusicIndex].name:'Музыка не запущена';
- const toggle=$('musicToggleBtn');if(toggle)toggle.textContent=$('thirdTrack')&&!$('thirdTrack').paused?'⏸ Пауза':'▶ Продолжить';
+ const audio=$('thirdTrack');const playing=!!(audio&&audio.src&&!audio.paused);
+ const toggle=$('musicToggleBtn');if(toggle)toggle.textContent=playing?'Ⅱ Пауза':'▶ Воспроизвести';
+ const status=$('musicPlayingStatus');if(status)status.textContent=playing?'● ВОСПРОИЗВЕДЕНИЕ':'ГОТОВ К ВОСПРОИЗВЕДЕНИЮ';
+ const disc=$('musicDisc');if(disc)disc.style.animation=playing?'musicSpin 7s linear infinite':'none';
+ const count=$('selectedTrackCount');if(count)count.textContent=selectedMusicTracks.length;
+}
+$('musicSearch')?.addEventListener('input',renderMusicList);
+$('musicSelectAllBtn')?.addEventListener('click',()=>{selectedMusicTracks=MUSIC_TRACKS.map((_,i)=>i);saveSelectedMusic();renderMusicList()});
+$('musicClearAllBtn')?.addEventListener('click',()=>{selectedMusicTracks=[];saveSelectedMusic();renderMusicList()});
+function playTrack(index){
+ const t=$('thirdTrack');if(!t||!MUSIC_TRACKS[index])return;
+ currentMusicIndex=index;t.src=MUSIC_TRACKS[index].src;t.volume=audioPrefs.music/100;t.loop=false;t.load();renderMusicList();
+ const p=t.play();if(p&&p.catch)p.catch(()=>{const current=$('currentTrackName');if(current)current.textContent='Не удалось загрузить трек: '+MUSIC_TRACKS[index].name+' — проверь файл в папке music';});
+}
+function playNextTrack(){
+ const t=$('thirdTrack');if(!t)return;
+ const queue=selectedMusicTracks.slice().sort((a,b)=>a-b);
+ if(!queue.length){currentMusicIndex=-1;renderMusicList();return;}
+ let pos=queue.indexOf(currentMusicIndex);let next=queue[(pos+1)%queue.length];
+ playTrack(next);
 }
 function playRandomTrack(){
- const t=$('thirdTrack');if(!t||!MUSIC_TRACKS.length)return;
- let next=0;
- if(MUSIC_TRACKS.length>1){do{next=Math.floor(Math.random()*MUSIC_TRACKS.length)}while(next===currentMusicIndex);}
- currentMusicIndex=next;t.src=MUSIC_TRACKS[next].src;t.volume=audioPrefs.music/100;t.loop=false;t.load();
- renderMusicList();
- const p=t.play();if(p&&p.catch)p.catch(()=>{});
+ const queue=selectedMusicTracks.slice().sort((a,b)=>a-b);
+ if(!queue.length){const current=$('currentTrackName');if(current)current.textContent='Сначала выбери хотя бы один трек';return;}
+ const next=queue.includes(currentMusicIndex)?queue[(queue.indexOf(currentMusicIndex)+1)%queue.length]:queue[0];
+ playTrack(next);
 }
-function startThirdTrack(){const t=$('thirdTrack');if(!t)return;t.onended=playRandomTrack;playRandomTrack();}
+function startThirdTrack(){const t=$('thirdTrack');if(!t)return;t.onended=playNextTrack;playRandomTrack();}
 $('shuffleNowBtn')?.addEventListener('click',playRandomTrack);
-$('musicToggleBtn')?.addEventListener('click',()=>{const t=$('thirdTrack');if(!t)return;if(t.paused){t.play().then(renderMusicList).catch(()=>{});}else{t.pause();renderMusicList();}});
+$('musicToggleBtn')?.addEventListener('click',()=>{const t=$('thirdTrack');if(!t)return;if(t.paused){if(!t.src)playRandomTrack();else t.play().then(renderMusicList).catch(()=>{});}else{t.pause();renderMusicList();}});
+$('thirdTrack')?.addEventListener('ended',playNextTrack);
 $('thirdTrack')?.addEventListener('play',renderMusicList);
 $('thirdTrack')?.addEventListener('pause',renderMusicList);
 renderMusicList();
