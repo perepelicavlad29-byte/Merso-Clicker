@@ -181,7 +181,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
 .achievement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .achievement-card{display:flex;align-items:center;gap:12px;min-width:0;padding:12px;background:#171a18;border:1px solid #49463b;position:relative;overflow:hidden}
 .achievement-card.unlocked{border-color:#a58a53;background:linear-gradient(110deg,#28251d,#171a18 72%);box-shadow:inset 3px 0 #c4a66b}
-.achievement-card.locked{opacity:.72;filter:saturate(.45)}.achievement-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;background:#0d0f0e;border:1px solid #5e5949;font-size:21px}
+.achievement-card.locked{opacity:.72;filter:saturate(.45)}.achievement-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;background:#0d0f0e;border:1px solid #5e5949;padding:4px;box-sizing:border-box}.achievement-icon img{display:block;width:100%;height:100%;object-fit:contain}.achievement-card.locked .achievement-icon img{filter:grayscale(1);opacity:.45}
 .achievement-copy{min-width:0;flex:1}.achievement-copy strong{display:block;color:#e9d7ad;font-size:14px;margin-bottom:4px}.achievement-copy p{margin:0 0 6px;color:#c3bca9;font-size:12px;line-height:1.35}.achievement-copy small{font:9px Arial,sans-serif;letter-spacing:1px;color:#b59a60}.achievement-card.locked .achievement-copy small{color:#888579}.achievement-stamp{font:700 20px Georgia,serif;color:#d3b36c}
 @media(max-width:650px){.achievement-grid{grid-template-columns:1fr}.achievement-summary strong{font-size:22px}.achievement-card{padding:10px}}
 </style>
@@ -324,40 +324,39 @@ function render(){
  $('goal').textContent=state.total>=1000?'Цель выполнена! Ты легенда!':`Следующая цель: ${fmt(goal)} ${state.currency}`;
  $('goalProgress').textContent=`${fmt(state.total%100)} / 100`; $('goalBar').style.width=progress+'%';
   const achievementList=[
-   ['Первый шаг в Зеркале','Сделай первый клик.',state.clicks>=1,'🪞'],
-   ['Работа начинается','Накликай 100 монет за всё время.',state.total>=100,'🪙'],
-   ['Первая тысяча','Заработай 1 000 монет за всё время.',state.total>=1000,'💰'],
-   ['Контракт подписан','Заработай 10 000 монет за всё время.',state.total>=10000,'📜'],
-   ['Долг растёт','Заработай 100 000 монет за всё время.',state.total>=100000,'🩸'],
-   ['Маленькая сингулярность','Заработай 1 000 000 монет за всё время.',state.total>=1000000,'⚙️'],
-   ['Руки не для красоты','Сделай 10 кликов.',state.clicks>=10,'👊'],
-   ['Без передышки','Сделай 100 кликов.',state.clicks>=100,'🥊'],
-   ['Красная кнопка','Сделай 500 кликов.',state.clicks>=500,'🔴'],
-   ['Одержимость','Сделай 1 000 кликов.',state.clicks>=1000,'👁️'],
-   ['Сила эго','Прокачай силу до 10.',state.power>=10,'✨'],
-   ['Синхронизация','Прокачай силу до 25.',state.power>=25,'🔗'],
-   ['Предел возможностей','Прокачай силу до 50.',state.power>=50,'⚡'],
-   ['Первый автоматон','Купи первое улучшение автоматизации.',state.auto+state.boost*5>=1,'🤖'],
-   ['Фабрика монет','Набери 10 уровней автоматизации и буста.',state.auto+state.boost*5>=10,'🏭'],
-   ['Маленький отдел','Собери 2 скина.',state.ownedSkins.length>=2,'🪪'],
-   ['Коллекционер','Собери 4 скина.',state.ownedSkins.length>=4,'🎭'],
-   ['Собрание личностей','Собери все 7 скинов.',state.ownedSkins.length>=7,'🧥'],
-   ['Новая личность','Надень любой скин из коллекции.',state.equippedSkin>=0,'🎟️'],
-   ['Особый заказ','Активируй код KILKA и получи скин «Мерсо с Дон».',state.ownedSkins.includes(7),'🎂'],
-   ['За гранью','Открой трансформацию персонажа.',state.transformed,'🕳️'],
-   ['Первое улучшение','Купи хотя бы одно улучшение клика.',state.owned.click>=1,'🔧'],
-   ['Механический помощник','Прокачай автоулучшение до 5.',state.auto>=5,'⚙️'],
-   ['Разгон','Прокачай буст до 5.',state.boost>=5,'💥'],
-   ['Ни шагу назад','Накопи 5 000 монет одновременно.',state.coins>=5000,'🛡️'],
-   ['На чёрный день','Накопи 50 000 монет одновременно.',state.coins>=50000,'🌑'],
-   ['Лунный бухгалтер','Накопи 250 000 монет одновременно.',state.coins>=250000,'🌙'],
-   ['День сурка','Сделай 10 000 кликов.',state.clicks>=10000,'🔁'],
-   ['Слишком много работы','Заработай 10 000 000 монет за всё время.',state.total>=10000000,'📈'],
-   ['Синдикат одобряет','Разблокируй хотя бы 5 достижений.',false,'🏆']
-  ];
+   ['Первый шаг в Зеркале','Сделай первый клик.',state.clicks>=1,'achievement-icons/achievement-01.png'],
+   ['Работа начинается','Накликай 100 монет за всё время.',state.total>=100,'achievement-icons/achievement-02.png'],
+   ['Первая тысяча','Заработай 1 000 монет за всё время.',state.total>=1000,'achievement-icons/achievement-03.png'],
+   ['Контракт подписан','Заработай 10 000 монет за всё время.',state.total>=10000,'achievement-icons/achievement-04.png'],
+   ['Долг растёт','Заработай 100 000 монет за всё время.',state.total>=100000,'achievement-icons/achievement-05.png'],
+   ['Маленькая сингулярность','Заработай 1 000 000 монет за всё время.',state.total>=1000000,'achievement-icons/achievement-06.png'],
+   ['Руки не для красоты','Сделай 10 кликов.',state.clicks>=10,'achievement-icons/achievement-07.png'],
+   ['Без передышки','Сделай 100 кликов.',state.clicks>=100,'achievement-icons/achievement-08.png'],
+   ['Красная кнопка','Сделай 500 кликов.',state.clicks>=500,'achievement-icons/achievement-09.png'],
+   ['Одержимость','Сделай 1 000 кликов.',state.clicks>=1000,'achievement-icons/achievement-10.png'],
+   ['Сила эго','Прокачай силу до 10.',state.power>=10,'achievement-icons/achievement-11.png'],
+   ['Синхронизация','Прокачай силу до 25.',state.power>=25,'achievement-icons/achievement-12.png'],
+   ['Предел возможностей','Прокачай силу до 50.',state.power>=50,'achievement-icons/achievement-13.png'],
+   ['Первый автоматон','Купи первое улучшение автоматизации.',state.auto+state.boost*5>=1,'achievement-icons/achievement-14.png'],
+   ['Фабрика монет','Набери 10 уровней автоматизации и буста.',state.auto+state.boost*5>=10,'achievement-icons/achievement-15.png'],
+   ['Маленький отдел','Собери 2 скина.',state.ownedSkins.length>=2,'achievement-icons/achievement-16.png'],
+   ['Коллекционер','Собери 4 скина.',state.ownedSkins.length>=4,'achievement-icons/achievement-17.png'],
+   ['Собрание личностей','Собери все 7 скинов.',state.ownedSkins.length>=7,'achievement-icons/achievement-18.png'],
+   ['Новая личность','Надень любой скин из коллекции.',state.equippedSkin>=0,'achievement-icons/achievement-19.png'],
+   ['Особый заказ','Активируй код KILKA и получи скин «Мерсо с Дон».',state.ownedSkins.includes(7),'achievement-icons/achievement-20.png'],
+   ['За гранью','Открой трансформацию персонажа.',state.transformed,'achievement-icons/achievement-21.png'],
+   ['Первое улучшение','Купи хотя бы одно улучшение клика.',state.owned.click>=1,'achievement-icons/achievement-22.png'],
+   ['Механический помощник','Прокачай автоулучшение до 5.',state.auto>=5,'achievement-icons/achievement-23.png'],
+   ['Разгон','Прокачай буст до 5.',state.boost>=5,'achievement-icons/achievement-24.png'],
+   ['Ни шагу назад','Накопи 5 000 монет одновременно.',state.coins>=5000,'achievement-icons/achievement-25.png'],
+   ['На чёрный день','Накопи 50 000 монет одновременно.',state.coins>=50000,'achievement-icons/achievement-26.png'],
+   ['Лунный бухгалтер','Накопи 250 000 монет одновременно.',state.coins>=250000,'achievement-icons/achievement-27.png'],
+   ['День сурка','Сделай 10 000 кликов.',state.clicks>=10000,'achievement-icons/achievement-28.png'],
+   ['Слишком много работы','Заработай 10 000 000 монет за всё время.',state.total>=10000000,'achievement-icons/achievement-29.png'],
+   ['Синдикат одобряет','Разблокируй хотя бы 5 достижений.',false,'achievement-icons/achievement-30.png'],  ];
   const unlockedCount=achievementList.filter(a=>a[2]).length;
   achievementList[29][2]=unlockedCount>=5;
-  $('achievements').innerHTML=`<div class="achievement-summary"><strong>${achievementList.filter(a=>a[2]).length} / ${achievementList.length}</strong><span>ДОСТИЖЕНИЙ ПОЛУЧЕНО</span></div><div class="achievement-grid">${achievementList.map(a=>`<div class="achievement-card ${a[2]?'unlocked':'locked'}"><span class="achievement-icon">${a[2]?a[3]:'🔒'}</span><div class="achievement-copy"><strong>${a[0]}</strong><p>${a[1]}</p><small>${a[2]?'ЗАПИСЬ ЗАФИКСИРОВАНА':'УСЛОВИЕ НЕ ВЫПОЛНЕНО'}</small></div><span class="achievement-stamp">${a[2]?'✓':'?'}</span></div>`).join('')}</div>`;
+  $('achievements').innerHTML=`<div class="achievement-summary"><strong>${achievementList.filter(a=>a[2]).length} / ${achievementList.length}</strong><span>ДОСТИЖЕНИЙ ПОЛУЧЕНО</span></div><div class="achievement-grid">${achievementList.map(a=>`<div class="achievement-card ${a[2]?'unlocked':'locked'}"><span class="achievement-icon"><img src="${a[3]}" alt="" loading="lazy"></span><div class="achievement-copy"><strong>${a[0]}</strong><p>${a[1]}</p><small>${a[2]?'ЗАПИСЬ ЗАФИКСИРОВАНА':'УСЛОВИЕ НЕ ВЫПОЛНЕНО'}</small></div><span class="achievement-stamp">${a[2]?'✓':'?'}</span></div>`).join('')}</div>`;
 }
 const audioPrefs={music:55,sound:70,phrase:70};
 try{const stored=JSON.parse(localStorage.getItem('bossClickerAudioPrefs')||'{}');if(Number.isFinite(stored.music))audioPrefs.music=Math.max(0,Math.min(100,stored.music));if(Number.isFinite(stored.sound))audioPrefs.sound=Math.max(0,Math.min(100,stored.sound));if(Number.isFinite(stored.phrase))audioPrefs.phrase=Math.max(0,Math.min(100,stored.phrase));}catch(e){}
