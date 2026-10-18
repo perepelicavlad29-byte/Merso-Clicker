@@ -146,7 +146,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
 
 .menu-icon { width: 20px; height: 20px; object-fit: contain; vertical-align: middle; margin-right: 6px; flex-shrink: 0; }
 
-/* Custom music archive UI */
+/* Skin promo-code panel */ .code-panel{padding:clamp(14px,2vw,24px)} .code-form{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 10px} .code-form input{flex:1;min-width:180px;text-transform:uppercase;letter-spacing:1px} .code-form button{min-width:130px} .code-status{min-height:24px;font-weight:700;margin-top:10px} .code-status.success{color:#9be6a4}.code-status.error{color:#ff9b9b}.code-hints{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.code-chip{border:1px solid #746342;background:#211d18;color:#f0d28e;padding:7px 10px;border-radius:8px;font-size:12px} /* Custom music archive UI */
 .music-library{padding:clamp(12px,2vw,24px);overflow:hidden}
 .music-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
 .music-eyebrow{font:10px Arial,sans-serif;letter-spacing:2.2px;color:#c4a66b;margin-bottom:7px}
@@ -192,7 +192,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
  <div class="wallet"><span id="currencyIcon" class="coin">🪙</span><div><span id="money">0</span><div class="sub" id="currencyName">Лунаси</div></div></div>
 </header>
 <nav class="panel">
- <button class="active" data-tab="click"><img class="menu-icon" src="menu-icons/click.png" alt=""> Кликер</button><button data-tab="upgrades"><img class="menu-icon" src="menu-icons/upgrades.png" alt=""> Улучшения</button><button data-tab="sisyphus"><img class="menu-icon" src="menu-icons/sisyphus.png" alt=""> Магазин Сизифа</button><button data-tab="inventory"><img class="menu-icon" src="menu-icons/inventory.png" alt=""> Инвентарь</button><button data-tab="achievements"><img class="menu-icon" src="menu-icons/achievements.png" alt=""> Достижения</button><button data-tab="music"><img class="menu-icon" src="menu-icons/music.png" alt=""> Выбор музыки</button><button data-tab="settings"><img class="menu-icon" src="menu-icons/settings.png" alt=""> Настройки</button>
+ <button class="active" data-tab="click"><img class="menu-icon" src="menu-icons/click.png" alt=""> Кликер</button><button data-tab="upgrades"><img class="menu-icon" src="menu-icons/upgrades.png" alt=""> Улучшения</button><button data-tab="sisyphus"><img class="menu-icon" src="menu-icons/sisyphus.png" alt=""> Магазин Сизифа</button><button data-tab="inventory"><img class="menu-icon" src="menu-icons/inventory.png" alt=""> Инвентарь</button><button data-tab="codes"><img class="menu-icon" src="menu-icons/codes.png" alt=""> Коды</button><button data-tab="achievements"><img class="menu-icon" src="menu-icons/achievements.png" alt=""> Достижения</button><button data-tab="music"><img class="menu-icon" src="menu-icons/music.png" alt=""> Выбор музыки</button><button data-tab="settings"><img class="menu-icon" src="menu-icons/settings.png" alt=""> Настройки</button>
 </nav>
 <main class="center">
  <section class="stats">
@@ -208,7 +208,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
  </section>
  <section class="panel" id="upgradeSection"><h2 class="section-title"><img class="upgrade-heading-icon" src="upgrade-heading-icon.png" alt=""> Улучшения</h2><div class="upgrades" id="upgrades"></div></section>
  <section class="panel hidden" id="sisyphusSection"><h2 class="section-title">🗿 Магазин Сизифа</h2><p class="small">Покупай скины за монеты. Каждый скин увеличивает доход за клик. Картинки можно положить в папку <b>skins</b> как skin1.png — skin6.png.</p><div id="skinShop" class="upgrades skin-shop"></div></section>
- <section class="panel hidden" id="inventorySection"><h2 class="section-title">🎒 Инвентарь скинов</h2><p class="small">Здесь находятся все купленные скины. Нажми «Экипировать», чтобы выбрать персонажа.</p><div id="skinInventory" class="upgrades skin-shop"></div></section>
+ <section class="panel hidden" id="inventorySection"><h2 class="section-title">🎒 Инвентарь скинов</h2><p class="small">Здесь находятся все купленные скины. Нажми «Экипировать», чтобы выбрать персонажа.</p><div id="skinInventory" class="upgrades skin-shop"></div></section> <section class="panel hidden code-panel" id="codesSection"><h2 class="section-title">🎟️ Панель кодов</h2><p class="small">Введи промокод, чтобы бесплатно получить скин. Каждый код можно активировать только один раз в этом браузере.</p><form id="skinCodeForm" class="code-form"><input id="skinCodeInput" type="text" maxlength="40" autocomplete="off" placeholder="ВВЕДИ КОД" aria-label="Промокод"><button type="submit">Получить скин</button></form><div id="skinCodeStatus" class="code-status" role="status" aria-live="polite"></div><div class="code-hints"><span class="code-chip">KILKA</span></div></section>
  <section class="panel hidden" id="achievementSection"><h2 class="section-title">🏆 Достижения</h2><div id="achievements"></div></section>
  <section class="panel hidden music-library" id="musicSection">
   <div class="music-heading"><div><div class="music-eyebrow">LIMBUS RAILWAY • AUDIO ARCHIVE</div><h2 class="section-title">♫ Музыкальный архив</h2><p class="small">Собери свой плейлист. Отмеченные композиции будут играть по порядку и повторяться по кругу.</p></div><div class="music-count"><strong id="selectedTrackCount">8</strong><span>В ПЛЕЙЛИСТЕ</span></div></div>
@@ -281,7 +281,8 @@ const skinCatalog=[
  {id:3,name:'Пчелка Мерсо',price:35000,multiplier:3,file:'skins/skin3.png'},
  {id:4,name:'Барашек Мерсо',price:100000,multiplier:5,file:'skins/skin4.png'},
  {id:5,name:'Новогодний Мерсо',price:300000,multiplier:8,file:'skins/skin5.png'},
- {id:6,name:'МЕРСО ИЗ БОЛЬШОГО ПАЛЬЦА',price:1000000,multiplier:12,file:'skins/skin6.png'}
+ {id:6,name:'МЕРСО ИЗ БОЛЬШОГО ПАЛЬЦА',price:1000000,multiplier:12,file:'skins/skin6.png'},
+ {id:7,name:'Мерсо с Дон',price:0,multiplier:1,file:'skins/merso_s_don.png'}
 ];
 let state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:-1,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0}};
 try{const saved=JSON.parse(localStorage.getItem('bossClickerSave_v2'));if(saved){state={...state,...saved,owned:{...state.owned,...saved.owned},ownedSkins:Array.isArray(saved.ownedSkins)?saved.ownedSkins:[0],equippedSkin:Number.isInteger(saved.equippedSkin)?saved.equippedSkin:0};}}catch(e){}
@@ -342,7 +343,8 @@ const MUSIC_TRACKS=[
  {name:'ПАСОНЧИК ПО РАНДЕВУ',src:'./music/ПАСОНЧИК ПО РАНДЕВУ.m4a'},
  {name:'РАНДЕВУ НО ПОЕТ МЕРСО',src:'./music/РАНДЕВУ НО ПОЕТ МЕРСО.m4a'},
  {name:'Слоумо РАндеву',src:'./music/Слоумо РАндеву.m4a'},
- {name:'Четыре тридцать',src:'./music/Четыре тридцать.m4a'}
+ {name:'Четыре тридцать',src:'./music/Четыре тридцать.m4a'},
+ {name:'С ДНЕМ РОЖДЕНИЯ КИЛЬКА',src:'./music/С ДНЕМ РОЖДЕНИЯ КИЛЬКА.m4a'}
 ];
 let currentMusicIndex=-1;
 let selectedMusicTracks;
@@ -459,7 +461,9 @@ const mersoPhrases=[
  'Мхм........',
  'Меня зовут Мерсо',
  'Только не на сиськи.....',
- 'Крапива...'
+ 'Крапива...',
+ 'Пожалуйста',
+ 'С днём рождения, Килька'
 ];
 // Аудио для всех фраз Мерсо. Клади файлы в папку audio рядом с index.html.
 // Оставь имена файлов такими же, как ниже, или поменяй пути на свои.
@@ -469,6 +473,8 @@ const MERSO_PHRASE_AUDIO={
  'Меня зовут Мерсо':'./audio/merso-03.ogg',
  'Только не на сиськи.....':'./audio/merso-04.ogg',
  'Крапива...':'./audio/merso-05.ogg',
+ 'Пожалуйста':'./audio/merso-06.ogg',
+ 'С днём рождения, Килька':'./audio/merso-07.ogg',
  'Меня создал еблан по имени Оренж':'./audio/merso-rare.ogg'
 };
 let mersoPhraseAudio=null;
@@ -565,15 +571,36 @@ document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()
  $('musicSection').classList.toggle('hidden',tab!=='music');
  $('sisyphusSection').classList.toggle('hidden',tab!=='sisyphus');
  $('inventorySection').classList.toggle('hidden',tab!=='inventory');
- $('customPanel').classList.toggle('hidden',tab==='settings'||tab==='music'||tab==='achievements'||tab==='upgrades'||tab==='sisyphus'||tab==='inventory');
+ $('codesSection').classList.toggle('hidden',tab!=='codes');
+ $('customPanel').classList.toggle('hidden',tab==='settings'||tab==='music'||tab==='achievements'||tab==='upgrades'||tab==='sisyphus'||tab==='inventory'||tab==='codes');
  if(tab==='custom')$('customPanel').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='upgrades')$('upgradeSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='sisyphus')$('sisyphusSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='inventory')$('inventorySection').scrollIntoView({behavior:'smooth',block:'start'});
+ if(tab==='codes')$('codesSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='achievements')$('achievementSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='settings')$('settingsSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='music')$('musicSection').scrollIntoView({behavior:'smooth',block:'start'});
 }));
+const SKIN_REDEEM_CODES={
+ 'KILKA':{skinId:7,message:'Код KILKA активирован! Получен скин «Мерсо с Дон».'}
+};
+function setSkinCodeStatus(message,type){const el=$('skinCodeStatus');if(!el)return;el.textContent=message;el.className='code-status '+(type||'');}
+$('skinCodeForm')?.addEventListener('submit',e=>{
+ e.preventDefault();
+ const input=$('skinCodeInput');const code=(input?.value||'').trim().toUpperCase().replace(/\s+/g,'');
+ if(!code){setSkinCodeStatus('Сначала введи код.','error');return;}
+ const reward=SKIN_REDEEM_CODES[code];
+ if(!reward){setSkinCodeStatus('Такого кода нет. Проверь написание.','error');return;}
+ let redeemed=[];try{redeemed=JSON.parse(localStorage.getItem('bossClickerRedeemedSkinCodes')||'[]');if(!Array.isArray(redeemed))redeemed=[];}catch(err){redeemed=[];}
+ if(redeemed.includes(code)){setSkinCodeStatus('Этот код уже использован.','error');return;}
+ const skin=skinCatalog.find(k=>k.id===reward.skinId);
+ if(!skin){setSkinCodeStatus('Не удалось найти скин для этого кода.','error');return;}
+ if(!state.ownedSkins.includes(skin.id))state.ownedSkins.push(skin.id);
+ state.equippedSkin=skin.id;state.skin=skin.file;redeemed.push(code);
+ try{localStorage.setItem('bossClickerRedeemedSkinCodes',JSON.stringify(redeemed));}catch(err){}
+ if(input)input.value='';render();save();setSkinCodeStatus(reward.message+' Скин надет автоматически.','success');
+});
 $('saveBtn').addEventListener('click',save);
 $('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбросить весь прогресс?')){localStorage.removeItem('bossClickerSave_v2');localStorage.removeItem('bossClickerSave');state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:-1,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0}};render();toast('Прогресс сброшен.')}});
 setInterval(()=>{const rate=state.auto+state.boost*5;if(rate>0){state.coins+=rate;state.total+=rate;render();save()}},1000);
