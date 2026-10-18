@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+
 <title>Мерсо Кликер</title>
 <style>
 :root{--bg:#10131d;--panel:#191f2d;--panel2:#20293a;--accent:#ef4b5b;--text:#f5f5f7;--muted:#a8b1c3;--line:#303b50}
@@ -144,6 +147,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
 .skin-card button{width:100%;}
 @media(max-width:700px){.skin-shop{grid-template-columns:1fr;}}
 
+.special-icon{width:24px;height:24px;object-fit:contain;vertical-align:middle;margin-right:7px;flex-shrink:0}.section-title .special-icon{width:26px;height:26px;margin-right:7px}
 .menu-icon { width: 20px; height: 20px; object-fit: contain; vertical-align: middle; margin-right: 6px; flex-shrink: 0; }
 
 /* Skin promo-code panel */ .code-panel{padding:clamp(14px,2vw,24px)} .code-form{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 10px} .code-form input{flex:1;min-width:180px;text-transform:uppercase;letter-spacing:1px} .code-form button{min-width:130px} .code-status{min-height:24px;font-weight:700;margin-top:10px} .code-status.success{color:#9be6a4}.code-status.error{color:#ff9b9b}.code-hints{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.code-chip{border:1px solid #746342;background:#211d18;color:#f0d28e;padding:7px 10px;border-radius:8px;font-size:12px} /* Custom music archive UI */
@@ -201,6 +205,44 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
 @keyframes sparkFlash{0%{opacity:0;transform:scale(.8)}30%{opacity:1}100%{opacity:0;transform:scale(1.15)}}
 @media(prefers-reduced-motion:reduce){#achievementReward.show,#achievementReward.hide,.reward-emblem,.reward-shell:before,.reward-sparks{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 @media(max-width:650px){.achievement-grid{grid-template-columns:1fr}.achievement-summary strong{font-size:22px}.achievement-card{padding:10px}}
+
+/* Animated Limbus-style section drawer */
+.menu-toggle{display:flex;flex:0 0 48px;width:48px;height:46px;padding:10px;align-items:center;justify-content:center;flex-direction:column;gap:5px;background:linear-gradient(145deg,#2a2923,#111412);border:1px solid #c3a164;box-shadow:0 0 16px #0008;position:relative;z-index:1202}
+.menu-toggle span{display:block;width:24px;height:2px;background:#e7d2a0;transition:transform .35s ease,opacity .2s ease,width .3s ease;transform-origin:center}
+.menu-toggle[aria-expanded="true"] span:first-child{transform:translateY(7px) rotate(45deg)}
+.menu-toggle[aria-expanded="true"] span:nth-child(2){opacity:0;width:4px}
+.menu-toggle[aria-expanded="true"] span:last-child{transform:translateY(-7px) rotate(-45deg)}
+header .header-brand{min-width:0;flex:1}
+header .header-brand h1{line-height:1.15}
+.menu-backdrop{position:fixed;inset:0;background:radial-gradient(ellipse at 0 0,#c7a05b18,transparent 55%),#030403b8;backdrop-filter:blur(5px);z-index:1198;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s}
+.menu-backdrop.open{opacity:1;visibility:visible}
+.section-drawer{position:fixed!important;z-index:1199;left:12px;top:82px;width:min(360px,calc(100vw - 24px));max-height:calc(100dvh - 96px);overflow-y:auto;display:flex!important;flex-direction:column;gap:7px;padding:14px;background:linear-gradient(155deg,#20211cfa,#0b0e0df7 70%);border:1px solid #b99a5d;box-shadow:0 18px 70px #000d,inset 0 0 0 1px #fff08;transform:translateX(calc(-100% - 28px)) scale(.97);opacity:0;visibility:hidden;pointer-events:none;transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .28s ease,visibility .42s}
+.section-drawer.open{transform:translateX(0) scale(1);opacity:1;visibility:visible;pointer-events:auto}
+.section-drawer:before{content:'SELECT DESTINATION  /  LIMBUS RAILWAY';display:block;padding:4px 8px 12px;color:#c9ad76;font:10px 'IBM Plex Mono',monospace;letter-spacing:2px;border-bottom:1px solid #78613d;margin-bottom:3px}
+.section-drawer button{min-height:48px;display:flex;align-items:center;gap:9px;text-align:left;padding:12px 14px;font-size:12px;opacity:0;transform:translateX(-16px);transition:opacity .25s ease,transform .3s cubic-bezier(.2,.8,.2,1),background .2s ease,border-color .2s ease;box-shadow:inset 0 0 0 1px #fff03}
+.section-drawer.open button{animation:drawerItemIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--item-index, 0) * 55ms)}
+.section-drawer button:hover,.section-drawer button:focus-visible{transform:translateX(3px);border-color:#d6b66f;background:linear-gradient(90deg,#4b3024,#171916);outline:none}
+.section-drawer button.active{border-color:#dfbd78;background:linear-gradient(90deg,#652625,#211916);color:#fff0ce;box-shadow:inset 3px 0 #e5c47d,0 0 14px #bd87301c}
+@keyframes drawerItemIn{from{opacity:0;transform:translateX(-18px);filter:blur(3px)}to{opacity:1;transform:translateX(0);filter:blur(0)}}
+@media(max-width:650px){header{gap:10px!important;padding:12px!important;align-items:center}header .header-brand{flex:1 1 130px}header .header-brand h1{font-size:clamp(16px,4vw,24px);letter-spacing:1px}.menu-toggle{width:42px;height:42px;flex-basis:42px;padding:8px}.section-drawer{left:8px;top:76px;width:min(340px,calc(100vw - 16px));max-height:calc(100dvh - 86px);padding:11px}.section-drawer button{min-height:46px;font-size:11px}.wallet{gap:5px!important}}
+@media(prefers-reduced-motion:reduce){.menu-backdrop,.section-drawer,.section-drawer button,.menu-toggle span{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-delay:0ms!important}}
+
+
+/* Layout repair: the animated drawer is fixed, so the game itself must use one full-width column. */
+.app{grid-template-columns:minmax(0,1fr)!important;width:100%;max-width:100%;min-width:0}
+.app>header{grid-column:1!important;width:100%;min-width:0}
+.app>.center{grid-column:1!important;width:100%;min-width:0}
+.app>.center>.stats{width:100%;grid-template-columns:repeat(3,minmax(0,1fr))}
+.app>.center>.arena{width:100%;min-width:0}
+@media(max-width:650px){
+ .app{padding:8px;gap:9px}
+ .app>.center{gap:10px}
+ .app>.center>.stats{gap:6px}
+ .app>.center>.stats .stat{padding:9px;min-width:0}
+ .app>.center>.stats .stat strong{font-size:clamp(15px,4vw,21px);overflow-wrap:anywhere}
+}
+
+.rouge-upgrade-title{display:flex;align-items:center;gap:9px;margin-bottom:5px}.rouge-upgrade-icon{width:42px;height:42px;object-fit:contain;flex:0 0 42px}.rouge-ultimate{border:1px solid #ff334f!important;background:linear-gradient(135deg,#350710,#17111b 55%,#50101c)!important;box-shadow:0 0 18px #ff173944;animation:rougePulse 2.4s ease-in-out infinite}.rouge-ultimate strong{color:#ff9eaa;text-shadow:0 0 10px #ff334f}.rouge-apocalypse{animation:rougeFlash .75s ease-out 1}@keyframes rougePulse{0%,100%{box-shadow:0 0 12px #ff173922}50%{box-shadow:0 0 26px #ff173977}}@keyframes rougeFlash{0%{filter:brightness(3) saturate(1.8)}100%{filter:none}}
 </style>
 <link rel="icon" href="shortcut-icon/game-icon.png" type="image/png">
 </head>
@@ -215,11 +257,13 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
 
 <div class="app">
 <header>
- <div><h1 id="gameTitle">МЕРСО КЛИКЕР</h1><div class="sub">НАЖИМАЙ НА СИСЬКИ МЕРСО</div></div>
+ <button id="menuToggle" class="menu-toggle" type="button" aria-label="Открыть меню разделов" aria-expanded="false"><span></span><span></span><span></span></button>
+ <div class="header-brand"><h1 id="gameTitle">МЕРСО КЛИКЕР</h1><div class="sub">НАЖИМАЙ НА СИСЬКИ МЕРСО</div></div>
  <div class="wallet"><span id="currencyIcon" class="coin">🪙</span><div><span id="money">0</span><div class="sub" id="currencyName">Лунаси</div></div></div>
 </header>
-<nav class="panel">
- <button class="active" data-tab="click"><img class="menu-icon" src="menu-icons/click.png" alt=""> Кликер</button><button data-tab="upgrades"><img class="menu-icon" src="menu-icons/upgrades.png" alt=""> Улучшения</button><button data-tab="sisyphus"><img class="menu-icon" src="menu-icons/sisyphus.png" alt=""> Магазин Сизифа</button><button data-tab="inventory"><img class="menu-icon" src="menu-icons/inventory.png" alt=""> Инвентарь</button><button data-tab="codes"><img class="menu-icon" src="menu-icons/codes.png" alt=""> Коды</button><button data-tab="achievements"><img class="menu-icon" src="menu-icons/achievements.png" alt=""> Достижения</button><button data-tab="music"><img class="menu-icon" src="menu-icons/music.png" alt=""> Выбор музыки</button><button data-tab="settings"><img class="menu-icon" src="menu-icons/settings.png" alt=""> Настройки</button>
+<div id="menuBackdrop" class="menu-backdrop" aria-hidden="true"></div>
+<nav class="panel section-drawer" id="sectionDrawer" aria-label="Разделы игры">
+ <button class="active" data-tab="click"><img class="menu-icon" src="menu-icons/click.png" alt=""> Кликер</button><button data-tab="upgrades"><img class="menu-icon" src="menu-icons/upgrades.png" alt=""> Улучшения</button><button data-tab="sisyphus"><img class="menu-icon" src="menu-icons/sisyphus.png" alt=""> Магазин Сизифа</button><button data-tab="lenoir"><img class="special-icon" src="special-icons/le_noir.png" alt="" onerror="this.replaceWith(document.createTextNode('🖤'))"> Ле Нуар</button><button data-tab="lerouge"><img class="special-icon" src="special-icons/le_rouge.png" alt="" onerror="this.replaceWith(document.createTextNode('❤️'))"> Ле Роуж</button><button data-tab="inventory"><img class="menu-icon" src="menu-icons/inventory.png" alt=""> Инвентарь</button><button data-tab="codes"><img class="menu-icon" src="menu-icons/codes.png" alt=""> Коды</button><button data-tab="achievements"><img class="menu-icon" src="menu-icons/achievements.png" alt=""> Достижения</button><button data-tab="music"><img class="menu-icon" src="menu-icons/music.png" alt=""> Выбор музыки</button><button data-tab="settings"><img class="menu-icon" src="menu-icons/settings.png" alt=""> Настройки</button>
 </nav>
 <main class="center">
  <section class="stats">
@@ -235,7 +279,9 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
  </section>
  <section class="panel" id="upgradeSection"><h2 class="section-title"><img class="upgrade-heading-icon" src="upgrade-heading-icon.png" alt=""> Улучшения</h2><div class="upgrades" id="upgrades"></div></section>
  <section class="panel hidden" id="sisyphusSection"><h2 class="section-title">🗿 Магазин Сизифа</h2><p class="small">Покупай скины за монеты. Каждый скин увеличивает доход за клик. Картинки можно положить в папку <b>skins</b> как skin1.png — skin6.png.</p><div id="skinShop" class="upgrades skin-shop"></div></section>
- <section class="panel hidden" id="inventorySection"><h2 class="section-title">🎒 Инвентарь скинов</h2><p class="small">Здесь находятся все купленные скины. Нажми «Экипировать», чтобы выбрать персонажа.</p><div id="skinInventory" class="upgrades skin-shop"></div></section> <section class="panel hidden code-panel" id="codesSection"><h2 class="section-title">🎟️ Панель кодов</h2><p class="small">Введи промокод, чтобы бесплатно получить скин. Каждый код можно активировать только один раз в этом браузере.</p><form id="skinCodeForm" class="code-form"><input id="skinCodeInput" type="text" maxlength="40" autocomplete="off" placeholder="ВВЕДИ КОД" aria-label="Промокод"><button type="submit">Получить скин</button></form><div id="skinCodeStatus" class="code-status" role="status" aria-live="polite"></div><div class="code-hints"><span class="code-chip">KILKA</span></div></section>
+ <section class="panel hidden" id="lenoirSection"><h2 class="section-title"><img class="special-icon" src="special-icons/le_noir.png" alt="" onerror="this.replaceWith(document.createTextNode('🖤'))"> Магазин «Ле Нуар»</h2><p class="small">Тёмные сделки: постоянные улучшения силы клика за Лунаси.</p><div id="lenoirShop" class="upgrades"></div></section>
+ <section class="panel hidden" id="lerougeSection"><h2 class="section-title"><img class="special-icon" src="special-icons/le_rouge.png" alt="" onerror="this.replaceWith(document.createTextNode('❤️'))"> Магазин «Ле Роуж»</h2><p class="small">13 улучшений по мотивам Canto X: The Gaze Bearing — Ле Роуж, Grand Magasin Sisyphe, Золотая Шкура, Голос и рождение Багрового Бога. Изображения можно заменить в папке lerouge-upgrades.</p><div id="lerougeShop" class="upgrades"></div></section>
+ <section class="panel hidden" id="inventorySection"><h2 class="section-title">🎒 Инвентарь скинов</h2><p class="small">Здесь находятся все купленные скины. Нажми «Экипировать», чтобы выбрать персонажа.</p><div id="skinInventory" class="upgrades skin-shop"></div></section> <section class="panel hidden code-panel" id="codesSection"><h2 class="section-title">🎟️ Панель кодов</h2><p class="small">Введи промокод, чтобы бесплатно получить скин. Код KILKA даёт скин «Мерсо с Дон» с бонусом x2. После сброса прогресса код можно использовать снова.</p><form id="skinCodeForm" class="code-form"><input id="skinCodeInput" type="text" maxlength="40" autocomplete="off" placeholder="ВВЕДИ КОД" aria-label="Промокод"><button type="submit">Получить скин</button></form><div id="skinCodeStatus" class="code-status" role="status" aria-live="polite"></div><div class="code-hints"><span class="code-chip">KILKA</span></div></section>
  <section class="panel hidden" id="achievementSection"><h2 class="section-title">🏆 Достижения</h2><div id="achievements"></div></section>
  <section class="panel hidden music-library" id="musicSection">
   <div class="music-heading"><div><div class="music-eyebrow">LIMBUS RAILWAY • AUDIO ARCHIVE</div><h2 class="section-title">♫ Музыкальный архив</h2><p class="small">Собери свой плейлист. Отмеченные композиции будут играть по порядку и повторяться по кругу.</p></div><div class="music-count"><strong id="selectedTrackCount">8</strong><span>В ПЛЕЙЛИСТЕ</span></div></div>
@@ -310,11 +356,13 @@ const skinCatalog=[
  {id:4,name:'Барашек Мерсо',price:100000,multiplier:5,file:'skins/skin4.png'},
  {id:5,name:'Новогодний Мерсо',price:300000,multiplier:8,file:'skins/skin5.png'},
  {id:6,name:'МЕРСО ИЗ БОЛЬШОГО ПАЛЬЦА',price:1000000,multiplier:12,file:'skins/skin6.png'},
- {id:7,name:'Мерсо с Дон',price:0,multiplier:1,file:'skins/merso_s_don.png'}
+  {id:7,name:'Мерсо с Дон (код KILKA)',price:0,multiplier:2,file:'skins/merso_s_don.png',codeOnly:true},
+
 ];
-let state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:-1,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0}};
+let state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:-1,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0},ownedLeNoir:[],ownedLeRouge:[]};
 try{const saved=JSON.parse(localStorage.getItem('bossClickerSave_v2'));if(saved){state={...state,...saved,owned:{...state.owned,...saved.owned},ownedSkins:Array.isArray(saved.ownedSkins)?saved.ownedSkins:[0],equippedSkin:Number.isInteger(saved.equippedSkin)?saved.equippedSkin:0};}}catch(e){}
 if(!state.ownedSkins.includes(0))state.ownedSkins.unshift(0);
+if(!Array.isArray(state.ownedLeNoir))state.ownedLeNoir=[];if(!Array.isArray(state.ownedLeRouge))state.ownedLeRouge=[];
 if(state.equippedSkin===0&&state.skin==='boss.jpg')state.equippedSkin=-1;
 function cost(u){return Math.floor(u.base*Math.pow(1.55,state.owned[u.id]||0))}
 function fmt(n){return Math.floor(n).toLocaleString('ru-RU')}
@@ -338,7 +386,7 @@ function playNextAchievementReward(){
 }
 function skinMultiplier(){const k=skinCatalog.find(x=>x.id===state.equippedSkin);return k?k.multiplier:1;}
 function clickPower(){return Math.max(1,Math.floor(state.power*skinMultiplier()));}
-function render(){
+function render(){renderExtraShops();
  document.documentElement.style.setProperty('--accent',themes[state.theme].accent);
  document.documentElement.style.setProperty('--bg',themes[state.theme].bg);
  document.documentElement.style.setProperty('--panel',themes[state.theme].panel);
@@ -353,7 +401,7 @@ function render(){
  $('upgrades').innerHTML=upgrades.map(u=>`<div class="upgrade"><div class="emoji"><img src="upgrade-icons/${u.id}.png" alt="${u.name}" onerror="this.style.display='none';this.parentElement.textContent='${u.emoji}'"></div><strong>${u.name}</strong><p>${u.desc}<br>Уровень: ${state.owned[u.id]||0}</p><div class="price"><img class="currency-rose price-rose" src="currency/rose.png" alt="Розочка"> ${fmt(cost(u))}</div><button data-buy="${u.id}" ${state.coins<cost(u)?'disabled':''}>Купить</button></div>`).join('');
  $('colors').innerHTML=themes.map((t,i)=>`<button class="swatch ${state.theme===i?'selected':''}" data-theme="${i}"><span style="background:${t.accent}"></span>${t.name}</button>`).join('');
  $('symbols').innerHTML=symbols.map(s=>`<button data-symbol="${s}" class="${state.symbol===s?'selected':''}">${s}</button>`).join('');
- $('skinShop').innerHTML=skinCatalog.map(k=>{const owned=state.ownedSkins.includes(k.id),equipped=state.equippedSkin===k.id&&state.skin===k.file;return `<div class="upgrade skin-card"><div class="skin-preview"><img src="${k.file}" alt="${k.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none">🖼️</span></div><strong>${k.name}</strong><p>Бонус к клику: <b>x${k.multiplier}</b></p><div class="price"><img class="currency-rose price-rose" src="currency/rose.png" alt="Розочка"> ${fmt(k.price)}</div><button data-skin-action="${owned?'equip':'buy'}" data-skin-id="${k.id}" ${equipped?'disabled':''} ${!owned&&state.coins<k.price?'disabled':''}>${equipped?'Экипирован':owned?'Экипировать':'Купить'}</button></div>`}).join('');
+ $('skinShop').innerHTML=skinCatalog.filter(k=>!k.codeOnly).map(k=>{const owned=state.ownedSkins.includes(k.id),equipped=state.equippedSkin===k.id&&state.skin===k.file;return `<div class="upgrade skin-card"><div class="skin-preview"><img src="${k.file}" alt="${k.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none">🖼️</span></div><strong>${k.name}</strong><p>Бонус к клику: <b>x${k.multiplier}</b></p><div class="price"><img class="currency-rose price-rose" src="currency/rose.png" alt="Розочка"> ${fmt(k.price)}</div><button data-skin-action="${owned?'equip':'buy'}" data-skin-id="${k.id}" ${equipped?'disabled':''} ${!owned&&state.coins<k.price?'disabled':''}>${equipped?'Экипирован':owned?'Экипировать':'Купить'}</button></div>`}).join('');
  $('skinInventory').innerHTML=skinCatalog.filter(k=>state.ownedSkins.includes(k.id)).map(k=>{const equipped=state.equippedSkin===k.id&&state.skin===k.file;return `<div class="upgrade skin-card"><div class="skin-preview"><img src="${k.file}" alt="${k.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span style="display:none">🖼️</span></div><strong>${k.name}</strong><p>Бонус к клику: <b>x${k.multiplier}</b></p><button data-inventory-equip="${k.id}" ${equipped?'disabled':''}>${equipped?'✅ Надет':'Экипировать'}</button></div>`}).join('') || '<p class="small">Пока нет купленных скинов. Загляни в Магазин Сизифа!</p>';
  const goal=Math.min(100,Math.floor(state.total/100)*100+100),progress=Math.min(100,state.total%100);
  $('goal').textContent=state.total>=1000?'Цель выполнена! Ты легенда!':`Следующая цель: ${fmt(goal)} ${state.currency}`;
@@ -641,20 +689,72 @@ $('currencyInput').addEventListener('input',e=>{state.currency=e.target.value;re
 $('skinSelect').addEventListener('change',e=>{if(e.target.value==='boss.jpg'||e.target.value==='emoji'){state.equippedSkin=-1;state.skin=e.target.value;}else{const k=skinCatalog.find(x=>x.file===e.target.value);if(k&&state.ownedSkins.includes(k.id)){state.equippedSkin=k.id;state.skin=k.file;}else{e.target.value=state.skin;toast('Сначала купи этот скин в магазине!');}}render();save()});
 $('skinShop').addEventListener('click',e=>{const b=e.target.closest('[data-skin-action]');if(!b)return;const id=Number(b.dataset.skinId),k=skinCatalog.find(x=>x.id===id);if(!k)return;if(b.dataset.skinAction==='buy'){if(state.coins<k.price)return;state.coins-=k.price;if(!state.ownedSkins.includes(id))state.ownedSkins.push(id);state.equippedSkin=id;state.skin=k.file;toast(`${k.name} куплен! Бонус к клику x${k.multiplier}`);}else{state.equippedSkin=id;state.skin=k.file;toast(`${k.name} экипирован!`);}render();save();});
 $('skinInventory').addEventListener('click',e=>{const b=e.target.closest('[data-inventory-equip]');if(!b)return;const id=Number(b.dataset.inventoryEquip),k=skinCatalog.find(x=>x.id===id);if(!k||!state.ownedSkins.includes(id))return;state.equippedSkin=id;state.skin=k.file;render();save();toast(`${k.name} экипирован!`);});
+const LE_NOIR_ITEMS=[
+ {id:'noir1',name:'Чёрный контракт',desc:'+5 к силе клика',price:2500,power:5},
+ {id:'noir2',name:'Печать Нуара',desc:'+25 к силе клика',price:15000,power:25},
+ {id:'noir3',name:'Абсолютная тьма',desc:'+100 к силе клика',price:90000,power:100}
+];
+const LE_ROUGE_ITEMS=[
+ {id:'rouge1',name:'Осколок Золотой Шкуры',desc:'Крошечный фрагмент золотой смолы из трещин Сизифа. +1 Лунаси/сек',price:3000,auto:1,power:0,icon:'🔴',image:'lerouge-upgrades/rouge1.png'},
+ {id:'rouge2',name:'Эхо Голоса',desc:'Повторяющийся зов ушедшего Голоса Ле Роуж. +5 Лунаси/сек',price:18000,auto:5,power:0,icon:'📜',image:'lerouge-upgrades/rouge2.png'},
+ {id:'rouge3',name:'Жажда Желания',desc:'Следуй желанию — измени себя. +20 Лунаси/сек',price:100000,auto:20,power:0,icon:'🩸',image:'lerouge-upgrades/rouge3.png'},
+ {id:'rouge4',name:'Ателье Ле Роуж',desc:'Мода, выкроенная из золотой шкуры. +75 Лунаси/сек',price:450000,auto:75,power:0,icon:'💎',image:'lerouge-upgrades/rouge4.png'},
+ {id:'rouge5',name:'Пожиратели Золотой Шкуры',desc:'Ле Роуж добывают золото из стен Сизифа. +250 Лунаси/сек',price:1800000,auto:250,power:0,icon:'🔥',image:'lerouge-upgrades/rouge5.png'},
+ {id:'rouge6',name:'Бутик в Великом Магазине',desc:'Желание становится товаром. +900 Лунаси/сек',price:7500000,auto:900,power:0,icon:'📕',image:'lerouge-upgrades/rouge6.png'},
+ {id:'rouge7',name:'Шёпот Матери Мерсо',desc:'Последние слова Голоса звучат снова и снова. +3 500 Лунаси/сек',price:30000000,auto:3500,power:0,icon:'❤️\u200d🔥',image:'lerouge-upgrades/rouge7.png'},
+ {id:'rouge8',name:'Дизайнер Бренда',desc:'Перешивает плоть и желания в новую форму. +15 000 Лунаси/сек',price:125000000,auto:15000,power:0,icon:'⚙️',image:'lerouge-upgrades/rouge8.png'},
+ {id:'rouge9',name:'Трещины Сизифа',desc:'Золотая смола вырывается из стен. +70 000 Лунаси/сек',price:600000000,auto:70000,power:0,icon:'🏮',image:'lerouge-upgrades/rouge9.png'},
+ {id:'rouge10',name:'Кокон Нового Голоса',desc:'Нечто растёт внутри — голод уже пробуждается. +350 000 Лунаси/сек',price:3000000000,auto:350000,power:0,icon:'🌌',image:'lerouge-upgrades/rouge10.png'},
+ {id:'rouge11',name:'Рождение Pwie',desc:'Новый Голос Ле Роуж получает имя. +1 800 000 Лунаси/сек',price:15000000000,auto:1800000,power:0,icon:'🌕',image:'lerouge-upgrades/rouge11.png'},
+ {id:'rouge12',name:'Воля Багрового Бога',desc:'Желание расти и поглощать не знает предела. +10 000 000 Лунаси/сек и +10 000 к силе клика',price:80000000000,auto:10000000,power:10000,icon:'👑',image:'lerouge-upgrades/rouge12.png'},
+ {id:'rouge13',name:'РОЖДЕНИЕ БАГРОВОГО БОГА — PWIE',desc:'ФИНАЛ CANTO X: +1 000 000 000 Лунаси/сек, +1 000 000 к силе клика и удвоение всего автоматического дохода. Уникальная алая вспышка.',price:1000000000000,auto:1000000000,power:1000000,icon:'☄️',image:'lerouge-upgrades/rouge13.png'}
+];
+function renderExtraShops(){
+ const draw=(id,items,owned)=>{const root=$(id);if(!root)return;root.innerHTML=items.map(it=>{const got=owned.includes(it.id);return `<div class="upgrade ${it.id==='rouge13'?'rouge-ultimate':''}"><div class="upgrade-info"><div class="rouge-upgrade-title"><img class="rouge-upgrade-icon" src="${it.image||''}" alt="" onerror="this.replaceWith(document.createTextNode(${JSON.stringify(''+ '🔴')}))"><strong>${it.name}</strong></div><p>${it.desc}</p><small>${got?'КУПЛЕНО':'Цена: '+fmt(it.price)+' Лунаси'}</small></div><button data-extra-buy="${it.id}" ${got||state.coins<it.price?'disabled':''}>${got?'Куплено':'Купить'}</button></div>`}).join('');};
+ draw('lenoirShop',LE_NOIR_ITEMS,state.ownedLeNoir);draw('lerougeShop',LE_ROUGE_ITEMS,state.ownedLeRouge);
+}
+function buyExtraShopItem(id){
+ let item=LE_NOIR_ITEMS.find(x=>x.id===id),owned=state.ownedLeNoir;
+ if(!item){item=LE_ROUGE_ITEMS.find(x=>x.id===id);owned=state.ownedLeRouge;}
+ if(!item||owned.includes(id))return;
+ if(state.coins<item.price){toast('Недостаточно Лунаси!');return;}
+ state.coins-=item.price;owned.push(id);
+ if(item.power)state.power+=item.power;
+ if(item.auto)state.auto+=item.auto;
+ if(item.id==='rouge13'){document.body.classList.add('rouge-apocalypse');state.auto*=2;toast('🩸 Pwie пробудился! Весь автоматический доход удвоен!');}else{toast(`${item.name} приобретён!`);}
+ render();renderExtraShops();save();
+}
+$('lenoirShop').addEventListener('click',e=>{const b=e.target.closest('[data-extra-buy]');if(b)buyExtraShopItem(b.dataset.extraBuy);});
+$('lerougeShop').addEventListener('click',e=>{const b=e.target.closest('[data-extra-buy]');if(b)buyExtraShopItem(b.dataset.extraBuy);});
+const sectionDrawer=document.getElementById('sectionDrawer');
+const menuToggle=document.getElementById('menuToggle');
+const menuBackdrop=document.getElementById('menuBackdrop');
+sectionDrawer.querySelectorAll('button').forEach((button,index)=>button.style.setProperty('--item-index',index));
+function setMenuOpen(open){
+ sectionDrawer.classList.toggle('open',open);menuBackdrop.classList.toggle('open',open);
+ menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Закрыть меню разделов':'Открыть меню разделов');
+ menuBackdrop.setAttribute('aria-hidden',String(!open));
+}
+menuToggle.addEventListener('click',()=>setMenuOpen(!sectionDrawer.classList.contains('open')));
+menuBackdrop.addEventListener('click',()=>setMenuOpen(false));
+window.addEventListener('keydown',event=>{if(event.key==='Escape')setMenuOpen(false)});
 document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{
  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));
+ setMenuOpen(false);
  const tab=b.dataset.tab;
  $('upgradeSection').classList.toggle('hidden',tab!=='upgrades'&&tab!=='click');
  $('achievementSection').classList.toggle('hidden',tab!=='achievements');
  $('settingsSection').classList.toggle('hidden',tab!=='settings');
  $('musicSection').classList.toggle('hidden',tab!=='music');
  $('sisyphusSection').classList.toggle('hidden',tab!=='sisyphus');
+ $('lenoirSection').classList.toggle('hidden',tab!=='lenoir');$('lerougeSection').classList.toggle('hidden',tab!=='lerouge');
  $('inventorySection').classList.toggle('hidden',tab!=='inventory');
  $('codesSection').classList.toggle('hidden',tab!=='codes');
- $('customPanel').classList.toggle('hidden',tab==='settings'||tab==='music'||tab==='achievements'||tab==='upgrades'||tab==='sisyphus'||tab==='inventory'||tab==='codes');
+ $('customPanel').classList.toggle('hidden',tab==='settings'||tab==='music'||tab==='achievements'||tab==='upgrades'||tab==='sisyphus'||tab==='lenoir'||tab==='lerouge'||tab==='inventory'||tab==='codes');
  if(tab==='custom')$('customPanel').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='upgrades')$('upgradeSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='sisyphus')$('sisyphusSection').scrollIntoView({behavior:'smooth',block:'start'});
+ if(tab==='lenoir')$('lenoirSection').scrollIntoView({behavior:'smooth',block:'start'});if(tab==='lerouge')$('lerougeSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='inventory')$('inventorySection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='codes')$('codesSection').scrollIntoView({behavior:'smooth',block:'start'});
  if(tab==='achievements')$('achievementSection').scrollIntoView({behavior:'smooth',block:'start'});
@@ -681,7 +781,7 @@ $('skinCodeForm')?.addEventListener('submit',e=>{
  if(input)input.value='';render();save();setSkinCodeStatus(reward.message+' Скин надет автоматически.','success');
 });
 $('saveBtn').addEventListener('click',save);
-$('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбросить весь прогресс?')){localStorage.removeItem('bossClickerSave_v2');localStorage.removeItem('bossClickerSave');state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:-1,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0}};render();toast('Прогресс сброшен.')}});
+$('resetBtn').addEventListener('click',()=>{if(confirm('Точно сбросить весь прогресс?')){localStorage.removeItem('bossClickerSave_v2');localStorage.removeItem('bossClickerSave');localStorage.removeItem('bossClickerRedeemedSkinCodes');state={coins:0,power:1,clicks:0,total:0,auto:0,boost:0,theme:0,symbol:'🪙',title:'Мерсо Кликер',currency:'Лунаси',skin:'boss.jpg',equippedSkin:-1,ownedSkins:[0],transformed:false,owned:{click:0,auto:0,boost:0},ownedLeNoir:[],ownedLeRouge:[]};render();toast('Прогресс сброшен.')}});
 setInterval(()=>{const rate=state.auto+state.boost*5;if(rate>0){state.coins+=rate;state.total+=rate;render();save()}},1000);
 applyAudioVolumes();
 render();
