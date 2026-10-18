@@ -183,6 +183,23 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
 .achievement-card.unlocked{border-color:#a58a53;background:linear-gradient(110deg,#28251d,#171a18 72%);box-shadow:inset 3px 0 #c4a66b}
 .achievement-card.locked{opacity:.72;filter:saturate(.45)}.achievement-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;background:#0d0f0e;border:1px solid #5e5949;padding:4px;box-sizing:border-box}.achievement-icon img{display:block;width:100%;height:100%;object-fit:contain}.achievement-card.locked .achievement-icon img{filter:grayscale(1);opacity:.45}
 .achievement-copy{min-width:0;flex:1}.achievement-copy strong{display:block;color:#e9d7ad;font-size:14px;margin-bottom:4px}.achievement-copy p{margin:0 0 6px;color:#c3bca9;font-size:12px;line-height:1.35}.achievement-copy small{font:9px Arial,sans-serif;letter-spacing:1px;color:#b59a60}.achievement-card.locked .achievement-copy small{color:#888579}.achievement-stamp{font:700 20px Georgia,serif;color:#d3b36c}
+#achievementReward{position:fixed;z-index:9999;top:22px;left:50%;width:min(440px,calc(100vw - 28px));transform:translate(-50%,-150%);opacity:0;pointer-events:none}
+#achievementReward.show{animation:achievementRewardIn .65s cubic-bezier(.18,.9,.25,1.2) forwards}
+#achievementReward.hide{animation:achievementRewardOut .45s ease-in forwards}
+.reward-shell{position:relative;display:grid;grid-template-columns:76px 1fr;align-items:center;gap:15px;padding:17px 20px;background:linear-gradient(120deg,#151714f5,#29251bf5 55%,#151714f5);border:1px solid #d6b66e;box-shadow:0 14px 50px #000b,inset 0 0 0 2px #d6b66e24;overflow:hidden}
+.reward-shell:before{content:"";position:absolute;inset:-60% auto -60% -35%;width:28%;background:linear-gradient(90deg,transparent,#ffe9a877,transparent);transform:rotate(20deg);animation:rewardShine 1.1s .25s ease-out}
+.reward-emblem{width:72px;height:72px;display:grid;place-items:center;background:#080a09;border:1px solid #b99b5c;box-shadow:0 0 0 4px #b99b5c20,0 0 24px #d4ad5333;animation:rewardEmblem .7s .1s both}
+.reward-emblem img{width:100%;height:100%;object-fit:contain;padding:5px}
+.reward-kicker{font:10px Arial,sans-serif;letter-spacing:3px;color:#f0ce7d;margin-bottom:5px}
+.reward-name{font:700 18px Georgia,serif;color:#fff0c6;line-height:1.2;margin-bottom:7px}
+.reward-caption{font:10px Arial,sans-serif;letter-spacing:1.5px;color:#c8b98f}
+.reward-sparks{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 6% 15%,#ffe8a9 0 2px,transparent 3px),radial-gradient(circle at 90% 20%,#ffe8a9 0 1px,transparent 3px),radial-gradient(circle at 80% 88%,#ffe8a9 0 2px,transparent 3px),radial-gradient(circle at 40% 8%,#ffe8a9 0 1px,transparent 3px);animation:sparkFlash .8s ease-out}
+@keyframes achievementRewardIn{0%{transform:translate(-50%,-150%) scale(.86);opacity:0}65%{transform:translate(-50%,8px) scale(1.025);opacity:1}100%{transform:translate(-50%,0) scale(1);opacity:1}}
+@keyframes achievementRewardOut{to{transform:translate(-50%,-130%) scale(.96);opacity:0}}
+@keyframes rewardShine{0%{left:-35%}100%{left:135%}}
+@keyframes rewardEmblem{0%{transform:rotate(-12deg) scale(.45);filter:brightness(2)}70%{transform:rotate(4deg) scale(1.1);filter:brightness(1.4)}100%{transform:rotate(0) scale(1);filter:brightness(1)}}
+@keyframes sparkFlash{0%{opacity:0;transform:scale(.8)}30%{opacity:1}100%{opacity:0;transform:scale(1.15)}}
+@media(prefers-reduced-motion:reduce){#achievementReward.show,#achievementReward.hide,.reward-emblem,.reward-shell:before,.reward-sparks{animation-duration:.01ms!important;animation-iteration-count:1!important}}
 @media(max-width:650px){.achievement-grid{grid-template-columns:1fr}.achievement-summary strong{font-size:22px}.achievement-card{padding:10px}}
 </style>
 <link rel="icon" href="shortcut-icon/game-icon.png" type="image/png">
@@ -239,6 +256,7 @@ p,label,.sub,.description,.hint,.stat small,.muted{font-family:'IBM Plex Mono','
 </div>
 <button id="saveBtn">Сохранить сейчас</button> <button id="resetBtn" class="danger">Сбросить весь прогресс</button><p id="settingsMsg" class="small"></p></section>
  <div class="toast" id="toast" aria-live="polite"></div>
+ <div id="achievementReward" role="status" aria-live="assertive" aria-atomic="true"></div>
 </main>
 <aside>
  <section class="panel custom" id="customPanel">
@@ -301,6 +319,23 @@ if(state.equippedSkin===0&&state.skin==='boss.jpg')state.equippedSkin=-1;
 function cost(u){return Math.floor(u.base*Math.pow(1.55,state.owned[u.id]||0))}
 function fmt(n){return Math.floor(n).toLocaleString('ru-RU')}
 function toast(s){$('toast').textContent=s}
+let previousAchievementState=null,achievementQueue=[],achievementPopupBusy=false,achievementPopupTimer=null;
+function queueAchievementRewards(list){
+ const now=new Map(list.map(a=>[a[0],a]));
+ if(previousAchievementState===null){previousAchievementState=new Map([...now].map(([name,a])=>[name,!!a[2]]));return;}
+ for(const [name,a] of now){if(a[2]&&!previousAchievementState.get(name))achievementQueue.push(a);}
+ previousAchievementState=new Map([...now].map(([name,a])=>[name,!!a[2]]));
+ playNextAchievementReward();
+}
+function playNextAchievementReward(){
+ if(achievementPopupBusy||!achievementQueue.length)return;
+ achievementPopupBusy=true;
+ const a=achievementQueue.shift(),el=$('achievementReward');
+ el.className='';el.innerHTML=`<div class="reward-shell"><div class="reward-sparks"></div><div class="reward-emblem"><img src="${a[3]}" alt=""></div><div><div class="reward-kicker">ЗАПИСЬ В АРХИВЕ • ПОДТВЕРЖДЕНА</div><div class="reward-name">${a[0]}</div><div class="reward-caption">✦ ДОСТИЖЕНИЕ ПОЛУЧЕНО ✦</div></div></div>`;
+ void el.offsetWidth;el.classList.add('show');
+ clearTimeout(achievementPopupTimer);
+ achievementPopupTimer=setTimeout(()=>{el.classList.remove('show');el.classList.add('hide');achievementPopupTimer=setTimeout(()=>{el.className='';el.innerHTML='';achievementPopupBusy=false;playNextAchievementReward();},480);},3400);
+}
 function skinMultiplier(){const k=skinCatalog.find(x=>x.id===state.equippedSkin);return k?k.multiplier:1;}
 function clickPower(){return Math.max(1,Math.floor(state.power*skinMultiplier()));}
 function render(){
@@ -357,6 +392,7 @@ function render(){
   const unlockedCount=achievementList.filter(a=>a[2]).length;
   achievementList[29][2]=unlockedCount>=5;
   $('achievements').innerHTML=`<div class="achievement-summary"><strong>${achievementList.filter(a=>a[2]).length} / ${achievementList.length}</strong><span>ДОСТИЖЕНИЙ ПОЛУЧЕНО</span></div><div class="achievement-grid">${achievementList.map(a=>`<div class="achievement-card ${a[2]?'unlocked':'locked'}"><span class="achievement-icon"><img src="${a[3]}" alt="" loading="lazy"></span><div class="achievement-copy"><strong>${a[0]}</strong><p>${a[1]}</p><small>${a[2]?'ЗАПИСЬ ЗАФИКСИРОВАНА':'УСЛОВИЕ НЕ ВЫПОЛНЕНО'}</small></div><span class="achievement-stamp">${a[2]?'✓':'?'}</span></div>`).join('')}</div>`;
+  queueAchievementRewards(achievementList);
 }
 const audioPrefs={music:55,sound:70,phrase:70};
 try{const stored=JSON.parse(localStorage.getItem('bossClickerAudioPrefs')||'{}');if(Number.isFinite(stored.music))audioPrefs.music=Math.max(0,Math.min(100,stored.music));if(Number.isFinite(stored.sound))audioPrefs.sound=Math.max(0,Math.min(100,stored.sound));if(Number.isFinite(stored.phrase))audioPrefs.phrase=Math.max(0,Math.min(100,stored.phrase));}catch(e){}
